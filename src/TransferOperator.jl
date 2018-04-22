@@ -1,5 +1,4 @@
-module TransferOperator
-
-# package code goes here
-
-end # module
+struct TransferOperator
+    TO::AbstractArray{Float64, 2}
+    estimator::TransferOperatorEstimator
+end
