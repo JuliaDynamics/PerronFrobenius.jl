@@ -1,6 +1,6 @@
 # PerronFrobenius.jl
 
-Package for computing the transfer operator (Perron-Frobenius operator) from time series data. 
+Implementations of Ulam's approximation of the transfer operator (Perron-Frobenius operator). 
 
 This package is part of (soon to be) larger ecosystem of packages operating on state space reconstructions in the [`StateSpaceReconstruction.jl`](https://github.com/kahaaga/StateSpaceReconstruction.jl) package. `PerronFrobenius` re-exports `StateSpaceReconstruction.jl`, so you can use everything available in that package directly by just doing `using PerronFrobenius`.
 
@@ -23,11 +23,11 @@ E = embed(ts, [1, 2, 3], [0, 0, 0]) # embed all time series with no relative lag
 
 ### Coarse graining
 
-Then the transfer operator can be computed from variuos coarse grainings (partitions) of the state space.  Currently, the available partitionings in `StateSpaceReconstruction.jl` are `Triangulation`, `LinearlyInvariantTriangulation` and `EquidistantBinning`. 
+Then the transfer operator can be computed from variuos coarse grainings (partitions) of the state space. 
 
 ```julia 
 # Partition the reconstruction by subdividing into disjoint simplices
-triang = triangulate(E) 
+triang = triangulate(E) # 
 
 # A simplex partitioning is not always invariant under the forward linear map, which may bias the estimate. In this case, we can 
 # adjust the last point of the embedding so that it falls inside the convex hull of the preceding points. This way, information
@@ -41,9 +41,11 @@ equibinning = bin_equidistant(E, 5) # bin into rectangular boxes, five boxes alo
 
 ## Transfer operator estimation
 
-The `transferoperator` function computes the Perron Frobenius operator. There are different estimators for each type of state space partition, but these are all available from `transferoperator`. 
+The `transferoperator` function computes the Perron Frobenius operator. There are different estimators for each type of state space partition, but these are all available from `transferoperator`. Currently, the available partitionings are `Triangulation`, `LinearlyInvariantTriangulation` and `EquidistantBinning` (type is inferred when partitioning from different embeddings). 
 
 ### 1. From invariant simplex partitions 
+The simplex intersection approximation of the transfer operator was used in [1], but only for lower-dimensional embeddings. This package handles embedding of arbitrary dimension. 
+
 The transfer operator is guaranteed to be Markov if computed from a `LinearlyInvariantTriangulation`. You have some options as to how 
 the operator is estimated. The approximate approach is fastest for simplex partitions. It produces (with default settings) estimates that usually deviate less than 10% from exact estimates.
 
