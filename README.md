@@ -39,10 +39,11 @@ equibinning = bin_equidistant(E, 5) # bin into rectangular boxes, five boxes alo
 ```
 
 
-### Estimate the transfer operator from the partitions
+## Transfer operator estimation
 
 The `transferoperator` function computes the Perron Frobenius operator. There are different estimators for each type of state space partition, but these are all available from `transferoperator`. 
 
+### 1. From invariant simplex partitions 
 The transfer operator is guaranteed to be Markov if computed from a `LinearlyInvariantTriangulation`. You have some options as to how 
 the operator is estimated. The approximate approach is fastest for simplex partitions. It produces (with default settings) estimates that usually deviate less than 10% from exact estimates.
 
@@ -52,7 +53,7 @@ to_triang = transferoperator(triang_lininv, exact = true)  # transition probabil
 to_triang = transferoperator(triang_lininv, exact = true, parallel = true)  # exact intersection, run in parallel (this is the default).
 to_triang = transferoperator(triang_lininv, exact = true, parallel = false)  # exact intersection, don't run in parallel.
 ```
-
+### 2. From simplex partitions 
 The same works for the regular `Triangulation`, but the resulting operator is not guaranteed to be fully Markov (but will likely be 
 very close).
 
@@ -62,7 +63,7 @@ to_triang = transferoperator(triang, exact = true)  # transition probabilities c
 to_triang = transferoperator(triang, exact = true, parallel = true)  # exact intersection, run in parallel (this is the default).
 to_triang = transferoperator(triang, exact = true, parallel = false)  # exact intersection, don't run in parallel.
 ```
-
+### 2. From rectangular bin partitions
 The fastest estimator dispatches on `EquidistantBinning`s, which is the recommended partition method for all but the shortest time series (< ~300 pts).
 
 ```julia
