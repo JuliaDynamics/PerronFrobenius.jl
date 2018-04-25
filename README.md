@@ -63,7 +63,7 @@ to_triang = transferoperator(triang, exact = true, parallel = false)  # exact in
 
 The fast estimator is the one that dispatches on `EquidistantBinning`s. 
 
-
+```julia
 to_equibin = transferoperator(equibinning)
 ```
 
