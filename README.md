@@ -61,7 +61,7 @@ to_triang = transferoperator(triang, exact = true, parallel = true)  # exact int
 to_triang = transferoperator(triang, exact = true, parallel = false)  # exact intersection, don't run in parallel.
 ```
 
-The fast estimator is the one that dispatches on `EquidistantBinning`s. 
+The fastest estimator dispatches on `EquidistantBinning`s, which is the recommended partition method for all but the shortest time series (< ~300 pts).
 
 ```julia
 to_equibin = transferoperator(equibinning)
