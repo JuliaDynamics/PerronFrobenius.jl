@@ -44,7 +44,7 @@ equibinning = bin_equidistant(E, 5) # bin into rectangular boxes, five boxes alo
 The `transferoperator` function computes the Perron Frobenius operator. There are different estimators for each type of state space partition, but these are all available from `transferoperator`. Currently, the available partitionings are `Triangulation`, `LinearlyInvariantTriangulation` and `EquidistantBinning` (type is inferred when partitioning from different embeddings). 
 
 ### 1. From invariant simplex partitions 
-The simplex intersection approximation of the transfer operator was used in [1], but only for lower-dimensional embeddings. This package handles embedding of arbitrary dimension. 
+The simplex intersection approximation of the transfer operator was used in [1]. This package handles embedding of arbitrary dimension by utilising [`SimplexIntersection.jl`](https://github.com/kahaaga/StateSpaceReconstruction.jl).
 
 The transfer operator is guaranteed to be Markov if computed from a `LinearlyInvariantTriangulation`. You have some options as to how 
 the operator is estimated. The approximate approach is fastest for simplex partitions. It produces (with default settings) estimates that usually deviate less than 10% from exact estimates.
@@ -72,3 +72,6 @@ The fastest estimator dispatches on `EquidistantBinning`s, which is the recommen
 to_equibin = transferoperator(equibinning)
 ```
 
+## References
+
+[^1]: Gary Froyland, Bulletin of the Australian Mathematical Society 56, 157 (1997).
