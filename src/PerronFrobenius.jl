@@ -12,15 +12,7 @@ import Parameters:
 using Simplices:
             subsample_coeffs,
             simplexintersection
-using StateSpaceReconstruction:
-            GenericEmbedding,
-            LinearlyInvariantEmbedding,
-            EquidistantBinning,
-            Triangulation,
-			LinearlyInvariantTriangulation
-using StateSpaceReconstruction.Partitioning.maybeintersecting_simplices
-using StateSpaceReconstruction.TimeSeries: SingleTimeSeries
-
+@reexport using StateSpaceReconstruction
 
 # Abstract estimator type
 abstract type TransferOperatorEstimator end
