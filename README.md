@@ -2,17 +2,19 @@
 
 Package for computing the transfer operator (Perron-Frobenius operator) from time series data. 
 
-## Basic usage
-The transfer operator can be computed from subtypes of `Partition` from the [`StateSpaceReconstruction.jl`](https://github.com/kahaaga/StateSpaceReconstruction.jl) package. This means that you have to make an state space reconstruction (embedding) of your data before computing the transfer operator. 
+This package is part of (soon to be) larger ecosystem of packages operating on state space reconstructions in the [`StateSpaceReconstruction.jl`](https://github.com/kahaaga/StateSpaceReconstruction.jl) package. `PerronFrobenius` re-exports `StateSpaceReconstruction.jl`, so you can use everything available in that package directly by just doing `using PerronFrobenius`.
 
-Say you've done a state space reconstruction on some time series data, for example as follows.
+## Basic usage
+The transfer operator can be computed from subtypes of `Partition` from `StateSpaceReconstruction.jl`. 
+
+The basis for computing the transfer operator using this package is a set of time series.
 
 ```julia
-# Create a set of red noise time series and do a state space reconstruction of them.
+# Create three red noise time series.
 ts = [cumsum(randn(100)) for i = 1:3] 
 ```
 
-`PerronFrobenius` re-exports `StateSpaceReconstruction.jl`, so you can use everything available in that package directly by just doing `using PerronFrobenius`. First, do a state space reconstruction.
+Now, create a state space reconstruction (embedding) of the red noise time series. 
 
 ```
 using PerronFrobenius 
