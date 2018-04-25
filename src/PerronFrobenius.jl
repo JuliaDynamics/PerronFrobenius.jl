@@ -1,33 +1,52 @@
 module PerronFrobenius
 
 using Reexport
-using StaticArrays, InplaceOps
-import GroupSlices: groupslices, firstinds, groupinds
-import Simplices: subsample_coeffs, simplexintersection
-@reexport using SimplexSplitting
-import SimplexSplitting: maybeintersecting_simplices
-import Parameters: @with_kw
+using StaticArrays
+using InplaceOps
+using RecipesBase
 
-# Internal module imports
-using TimeSeries: SingleTimeSeries
+import Parameters:
+            @with_kw,
+            @unpack
 
+using Simplices:
+            subsample_coeffs,
+            simplexintersection
+using StateSpaceReconstruction:
+            GenericEmbedding,
+            LinearlyInvariantEmbedding,
+            EquidistantBinning,
+            Triangulation,
+			LinearlyInvariantTriangulation
+using StateSpaceReconstruction.Partitioning.maybeintersecting_simplices
+using StateSpaceReconstruction.TimeSeries: SingleTimeSeries
 
 
 # Abstract estimator type
 abstract type TransferOperatorEstimator end
 
+include("TransferOperator.jl")
 include("estimators.jl")
 include("transferoperator.jl")
-
+include("left_eigenvector.jl")
 
 export
+    # Transfer operator types
     TransferOperator,
-    TransferOperatorEstimator,
+    ApproxSimplexTransferOperator,
+    ExactSimplexTransferOperator,
+    EquidistantBinningTransferOperator,
 
-    SimplexEstimator,
-    ExactSimplexEstimator,
-    PointCloudSimplexEstimator,
+    # Methods on transfer operator types
+    is_markov,
+    is_almostmarkov,
+    InvariantDistribution, left_eigenvector,
 
-    RectangularBinningEstimator,
-    RectBinEstimator
+    # Transfer operator estimators
+    transferoperator,
+    transferoperator_exact,
+    transferoperator_exact_p
+
+
+
 end

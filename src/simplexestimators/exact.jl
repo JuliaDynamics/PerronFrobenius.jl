@@ -3,7 +3,7 @@ Estimate the transfer operator from a `Triangulation` of a state space. In pract
 involves partitioning the state space into disjoint simplices (a simplex binning, so to
 speak). Will run in parallel if `nprocs() > 1`.
 """
-function TO_exact(t::Triangulation)
+function transferoperator_exact(t::Triangulation)
     const n_simplices = size(t.simplex_inds, 1)
     const dim = size(t.points, 2)
 
@@ -34,7 +34,7 @@ function TO_exact(t::Triangulation)
             end
         end
     end
-    return TO
+    return ExactSimplexTransferOperator(TO)
 end
 
 """
@@ -42,7 +42,7 @@ Estimate the transfer operator from a `Triangulation` of a state space. In pract
 involves partitioning the state space into disjoint simplices (a simplex binning, so to
 speak). Will run in parallel if `nprocs() > 1`.
 """
-function TO_exact_parallel(t::Triangulation)
+function transferoperator_exact_p(t::Triangulation)
 
     const n_simplices = size(t.simplex_inds, 1)
     const dim = size(t.points, 2)
@@ -75,5 +75,5 @@ function TO_exact_parallel(t::Triangulation)
         end
     end
 
-    return Array(TO)
+    return ExactSimplexTransferOperator(Array(TO))
 end
