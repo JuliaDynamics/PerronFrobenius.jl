@@ -1,5 +1,9 @@
-using TransferOperator
 using Base.Test
 
-# write your own tests here
-@test 1 == 2
+using Plots
+
+@everywhere using StateSpaceReconstruction
+@everywhere using PerronFrobenius
+
+include("triangulations.jl")
+include("rectangular.jl")
