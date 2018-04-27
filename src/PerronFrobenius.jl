@@ -18,8 +18,6 @@ using Simplices:
 abstract type TransferOperatorEstimator end
 
 include("TransferOperator.jl")
-include("estimators.jl")
-include("transferoperator.jl")
 include("left_eigenvector.jl")
 
 export
