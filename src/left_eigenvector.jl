@@ -17,7 +17,7 @@ This is done by repeated application of `M` on an initially random distribution
 until the distribution converges.
 """
 function left_eigenvector(
-        TO::EquidistantBinningTransferOperator;
+        TO::TransferOperator;
         N::Int = 100,
         tolerance::Float64 = 1/10^5,
         delta::Float64 = 1/10^5

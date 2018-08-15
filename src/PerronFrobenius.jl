@@ -37,8 +37,7 @@ export
     # Transfer operator estimators
     transferoperator,
     transferoperator_exact,
-    transferoperator_exact_p
-
-
+    transferoperator_exact_p,
+    transferoperator_approx
 
 end
