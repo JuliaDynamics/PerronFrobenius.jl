@@ -3,7 +3,7 @@ Estimate the transfer operator from a `Triangulation` of a state space. In pract
 involves partitioning the state space into disjoint simplices (a simplex binning, so to
 speak). Will run in parallel if `nprocs() > 1`.
 """
-function transferoperator_exact(t::Triangulation)
+function transferoperator_exact(t::T where {T <: StateSpaceReconstruction.Partitioning.Triangulation})
     const n_simplices = size(t.simplex_inds, 1)
     const dim = size(t.points, 2)
 
@@ -19,7 +19,7 @@ function transferoperator_exact(t::Triangulation)
     =#
     const convex_params_tol::Float64 = 1/10^12
 
-    TO = Array{Float64}(n_simplices, n_simplices) # intersecting volumes
+    TO = zeros(Float64, n_simplices, n_simplices) # intersecting volumes
 
     for i in 1:n_simplices
         imvol = t.volumes_im[i]

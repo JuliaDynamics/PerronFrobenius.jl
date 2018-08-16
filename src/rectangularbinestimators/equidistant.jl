@@ -1,11 +1,11 @@
 """
-    transferoperator(eb::EquidistantBinning)
+    transferoperator(eb::RectangularBinning)
 
 Estimate transfer operator from an equidistant, rectangular binning.
 """
-function transferoperator(eb::EquidistantBinning)
+function transferoperator(rb::StateSpaceReconstruction.Partitioning.RectangularBinning)
     @unpack dim, n_pts, bottom, top,
-        stepsizes, inds_nonempty_bins, first_inds, group_inds, all_inds = eb
+        stepsizes, inds_nonempty_bins, first_inds, group_inds, all_inds = rb
 
     # Initialise transfer (Perron-Frobenius) operator as a sparse matrix
     # (keep track of indices and values in separate columns for now)

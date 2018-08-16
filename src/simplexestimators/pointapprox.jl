@@ -130,7 +130,7 @@ points contained inside each simplex. The actual number of points used may be
 slightly higher.  By default, points are distributed regularly inside simplices
 according to a shape-preserving simplex splitting.
 
-The default number of points (`n_pts = 300`) usually gives a maximum error
+The default number of points (`n_pts = 200`) usually gives a maximum error
 in the entries of the transfer operator of < 10%.
 
 Points can also be distributed according to a uniform distribution by setting

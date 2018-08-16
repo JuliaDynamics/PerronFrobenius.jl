@@ -1,4 +1,4 @@
-abstract type TransferOperator <: AbstractArray{Float64, 2} end
+abstract type TransferOperator end
 
 type ExactSimplexTransferOperator <: TransferOperator
     TO::AbstractArray{Float64, 2}
