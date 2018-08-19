@@ -1,33 +1,31 @@
 using Parameters
 
+abstract type AbstractInvariantDistribution end
 """
 Contains a distribution over a triangulated state space. `dist::Vector{Float64}`
 is the distribution, and `nonzero_inds::Vector{Int}` are the indices of the
 simplices with non-zero measure.
 """
-struct InvariantDistribution
+struct InvariantDistribution <: AbstractInvariantDistribution
     dist::Vector{Float64} # Distribution over the simplices
     nonzero_inds::Vector{Int} # indices of nonzero entries
 end
 
-
 """
+    left_eigenvector(to::AbstractTransferOperator;
+                N::Int = 100, tolerance::Float64 = 1/10^5, delta::Float64 = 1/10^5)
+
 Compute the invariant probability distribution from a square Markov matrix `M`.
 This is done by repeated application of `M` on an initially random distribution
 until the distribution converges.
 """
-function left_eigenvector(
-        TO::TransferOperator;
-        N::Int = 100,
-        tolerance::Float64 = 1/10^5,
-        delta::Float64 = 1/10^5
-        )
-
+function left_eigenvector(to::AbstractTransferOperator;
+                N::Int = 100, tolerance::Float64 = 1/10^5, delta::Float64 = 1/10^5)
     #=
     # Start with a random distribution `Ρ` (big rho). Normalise it so that it
     # sums to 1 and forms a true probability distribution over the simplices.
     =#
-    Ρ = rand(Float64, 1, size(TO.TO, 1))
+    Ρ = rand(Float64, 1, size(to.TO, 1))
     Ρ = Ρ ./ sum(Ρ, 2)
 
     #=
@@ -37,7 +35,7 @@ function left_eigenvector(
     # meaning that we iterate until Ρ doesn't change substantially between
     # iterations.
     =#
-    distribution = Ρ * TO.TO
+    distribution = Ρ * to.TO
 
     distance = norm(distribution - Ρ) / norm(Ρ)
 
@@ -53,7 +51,7 @@ function left_eigenvector(
         Ρ = distribution
 
         # Apply the Markov matrix to the current state of the distribution
-        distribution = Ρ * TO.TO
+        distribution = Ρ * to.TO
 
         if (check_pts_counter <= num_checkpts &&
            counter == check_pts[check_pts_counter])
@@ -76,9 +74,8 @@ function left_eigenvector(
     end
 
     # Find partition elements with strictly positive measure.
-
-    simplex_inds_nonzero = find(distribution .> (tolerance/size(TO.TO, 1)))
+    simplex_inds_nonzero = find(distribution .> (tolerance/size(to.TO, 1)))
 
     # Extract the elements of the invariant measure corresponding to these indices
-    return InvariantDistribution(vec(distribution),simplex_inds_nonzero)
+    return PerronFrobenius.InvariantDistribution(vec(distribution),simplex_inds_nonzero)
 end

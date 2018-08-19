@@ -24,10 +24,10 @@ include("left_eigenvector.jl")
 
 export
     # Transfer operator types
-    TransferOperator,
+    AbstractTransferOperator,
     ApproxSimplexTransferOperator,
     ExactSimplexTransferOperator,
-    EquidistantBinningTransferOperator,
+    RectangularBinningTransferOperator,
 
     # Methods on transfer operator types
     is_markov,

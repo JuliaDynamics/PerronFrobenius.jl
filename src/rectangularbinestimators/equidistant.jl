@@ -65,5 +65,5 @@ function transferoperator(rb::StateSpaceReconstruction.Partitioning.RectangularB
     # we have in the embedding.
     n_rows = length(first_inds)
     TO = sparse(I[1:max_row], J[1:max_row], V[1:max_row], n_rows, n_rows)
-    EquidistantBinningTransferOperator(Array(TO))
+    RectangularBinningTransferOperator(Array(TO))
 end
