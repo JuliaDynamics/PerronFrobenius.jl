@@ -2,9 +2,11 @@ using Parameters
 
 abstract type AbstractInvariantDistribution end
 """
-Contains a distribution over a triangulated state space. `dist::Vector{Float64}`
-is the distribution, and `nonzero_inds::Vector{Int}` are the indices of the
-simplices with non-zero measure.
+	InvariantDistribution(dist, nonzero_inds)
+
+Invariant visitiation frequencies over a partitioned state space. Fields are
+`dist` (the probability distribution) and `nonzero_inds` (the indices of `dist`
+with nonzero entries).
 """
 struct InvariantDistribution <: AbstractInvariantDistribution
     dist::Vector{Float64} # Distribution over the simplices
@@ -12,15 +14,20 @@ struct InvariantDistribution <: AbstractInvariantDistribution
 end
 
 """
-    left_eigenvector(to::AbstractTransferOperator;
-                N::Int = 100, tolerance::Float64 = 1/10^5, delta::Float64 = 1/10^5)
+Compute the invariant probability distribution from a
+[`TransferOperator`](@ref). The distribution is obtained by repeated
+application of the transfer operator on an randomly initialised distribution
+	left_eigenvector(TO::EquidistantBinningTransferOperator; N=100,
+		tolerance=1/10^5, delta=1/10^5)
 
-Compute the invariant probability distribution from a square Markov matrix `M`.
-This is done by repeated application of `M` on an initially random distribution
 until the distribution converges.
+
+Optional arguments are `N` (maximum number of iterations), `tolerance` and
+`delta`, with the two latter deciding when convergence is achieved.
+
 """
 function left_eigenvector(to::AbstractTransferOperator;
-                N::Int = 100, tolerance::Float64 = 1/10^5, delta::Float64 = 1/10^5)
+			N::Int = 100, tolerance::Float64 = 1/10^5, delta::Float64 = 1/10^5)
     #=
     # Start with a random distribution `Ρ` (big rho). Normalise it so that it
     # sums to 1 and forms a true probability distribution over the simplices.
