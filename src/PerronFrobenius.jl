@@ -34,6 +34,9 @@ export
     is_almostmarkov,
     InvariantDistribution, left_eigenvector,
 
+	# Stuff needed for the estimators
+	organize_bin_labels, BinVisits,
+    
     # Transfer operator estimators
     transferoperator,
     transferoperator_exact,
