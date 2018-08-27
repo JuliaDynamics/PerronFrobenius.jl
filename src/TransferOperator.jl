@@ -9,6 +9,7 @@ Base.getindex(to::AbstractTransferOperator, i::Vector) = to.TO[:, i]
 Base.getindex(to::AbstractTransferOperator, i::Int, j::Int) = to.TO[i, j]
 Base.getindex(to::AbstractTransferOperator, i::Colon, j::Int) = getindex(to, i)
 Base.getindex(to::AbstractTransferOperator, i::Int, j::Colon) = to[i, :]
+Base.sum(to::AbstractTransferOperator, i::Int) = sum(to.TO, i)
 
 #########################
 # Pretty printing
