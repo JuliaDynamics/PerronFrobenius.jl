@@ -11,8 +11,8 @@
         TO2 = transferoperator(equibin)
         TO3 = transferoperator(equibin_inv)
 
-        @test typeof(TO2) == EquidistantBinningTransferOperator
-        @test typeof(TO3) == EquidistantBinningTransferOperator
+        @test typeof(TO2) <: RectangularBinningTransferOperator
+        @test typeof(TO3) <: RectangularBinningTransferOperator
 
 		# Last row might sum to zero, because the last point does not need to
 		# be contained in the last bin. However, the remaining row sums must
