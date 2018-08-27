@@ -3,7 +3,7 @@
 
 Estimate transfer operator from an equidistant, rectangular binning.
 """
-function transferoperator(rb::StateSpaceReconstruction.Partitioning.RectangularBinning)
+function transferoperator(rb::RectangularBinning)
     @unpack dim, n_pts, bottom, top,
         stepsizes, inds_nonempty_bins, first_inds, group_inds, all_inds = rb
 

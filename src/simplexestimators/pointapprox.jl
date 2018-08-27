@@ -4,7 +4,7 @@ Prepares the triangulation for a discrete approximation of the Markov matrix.
 Creates alternative representations of the simplices that allow for efficient
 (mostly non-allocating) checking if a point lies inside a simplex.
 """
-function prepare_for_discrete_approx(t::t::AbstractTriangulation)
+function prepare_for_discrete_approx(t::AbstractTriangulation)
 
     n_simplices = size(t.simplex_inds, 1)
     n_vertices = size(t.simplex_inds, 2)
@@ -136,7 +136,7 @@ in the entries of the transfer operator of < 10%.
 Points can also be distributed according to a uniform distribution by setting
 `sample_randomly = true`, but this decreases accuracy and is not recommended.
 """
-function transferoperator_approx(t::t::AbstractTriangulation;
+function transferoperator_approx(t::AbstractTriangulation;
                             n_pts::Int = 200,
                             sample_randomly::Bool = false)
 
