@@ -5,11 +5,12 @@
         E_invariant = invariantize(E)
         n_bins = 10
 
-        bins_visited_by_orbit_inv = assign_bin_labels(E, n_bins)
+        bins_visited_by_orbit = assign_bin_labels(E, n_bins)
         bins_visited_by_orbit_inv = assign_bin_labels(E_invariant, n_bins)
-
-        TO2 = transferoperator(bins_visited_by_orbit)
-        TO3 = transferoperator(bins_visited_by_orbit_inv)
+        bininfo = organize_bin_labels(bins_visited_by_orbit)
+        bininfo_inv = organize_bin_labels(bins_visited_by_orbit_inv)
+        TO2 = transferoperator(bininfo)
+        TO3 = transferoperator(bininfo_inv)
 
         @test typeof(TO2) <: RectangularBinningTransferOperator
         @test typeof(TO3) <: RectangularBinningTransferOperator
