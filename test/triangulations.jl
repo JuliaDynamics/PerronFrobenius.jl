@@ -39,7 +39,8 @@
     # Transfer operators from triangulations *not guaranteed to be invariant*
     TO = transferoperator(triang)
     TO_approx = transferoperator(triang, exact = false, parallel = false)
-    TO_approx_rand = transferoperator(triang, exact = false, parallel = false, sample_randomly = true)
+    TO_approx_rand = transferoperator(triang, exact = false,
+					parallel = false, sample_randomly = true)
     TO_exact = transferoperator(triang, exact = true, parallel = false)
     TO_exact_p = transferoperator(triang, exact = true, parallel = true)
 
