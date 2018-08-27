@@ -5,11 +5,11 @@
         E_invariant = invariantize(E)
         n_bins = 10
 
-        equibin = bin_equidistant(E, n_bins)
-        equibin_inv = bin_equidistant(E_invariant, n_bins)
+        bins_visited_by_orbit_inv = assign_bin_labels(E, n_bins)
+        bins_visited_by_orbit_inv = assign_bin_labels(E_invariant, n_bins)
 
-        TO2 = transferoperator(equibin)
-        TO3 = transferoperator(equibin_inv)
+        TO2 = transferoperator(bins_visited_by_orbit)
+        TO3 = transferoperator(bins_visited_by_orbit_inv)
 
         @test typeof(TO2) <: RectangularBinningTransferOperator
         @test typeof(TO3) <: RectangularBinningTransferOperator
