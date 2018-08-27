@@ -6,6 +6,7 @@ using Reexport
 using StaticArrays
 using InplaceOps
 using RecipesBase
+using GroupSlices
 
 import Parameters:
             @with_kw,
@@ -36,7 +37,7 @@ export
 
 	# Stuff needed for the estimators
 	organize_bin_labels, BinVisits,
-    
+
     # Transfer operator estimators
     transferoperator,
     transferoperator_exact,

@@ -58,7 +58,8 @@ end
 # Implementations of the different estimators
 ##################################################
 include("rectangularbinestimators/organize_binvisits.jl")
-include("rectangularbinestimators/equidistant.jl")
+include("rectangularbinestimators/binvisits_estimator.jl")
+#include("rectangularbinestimators/equidistant.jl")
 include("simplexestimators/exact.jl")
 include("simplexestimators/pointapprox.jl")
 
