@@ -26,6 +26,7 @@ include("left_eigenvector.jl")
 export
     # Transfer operator types
     AbstractTransferOperator,
+	AbstractTriangulationTransferOperator,
     ApproxSimplexTransferOperator,
     ExactSimplexTransferOperator,
     RectangularBinningTransferOperator,
