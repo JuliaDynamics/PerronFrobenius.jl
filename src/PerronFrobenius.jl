@@ -33,7 +33,7 @@ export
 
     # Methods on transfer operator types
     is_markov,
-    is_almostmarkov,
+    is_almost_markov,
     InvariantDistribution, left_eigenvector,
 
 	# Stuff needed for the estimators

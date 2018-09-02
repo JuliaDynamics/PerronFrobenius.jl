@@ -129,11 +129,15 @@ include("simplexestimators/pointapprox.jl")
 
 Is the transfer operator Markov? """
 is_markov(TO::AbstractTransferOperator) = all(sum(TO.TO, 2) .≈ 1)
+is_markov(M::AbstractArray{T, 2}) where T = all(sum(M, 2) .≈ 1)
 
 """
     is_almostmarkov(TO::AbstractTransferOperator; tol = 0.01) -> Bool
 
 Is the transfer operator almost Markov?
 """
-is_almostmarkov(TO::AbstractTransferOperator; tol = 0.01) =
+is_almost_markov(TO::AbstractTransferOperator; tol = 0.01) =
     all(sum(TO.TO, 2) .> (1 - tol))
+
+is_almost_markov(M::AbstractArray{T, 2}; tol = 0.01) where T =
+        all(sum(M, 2) .> (1 - tol))

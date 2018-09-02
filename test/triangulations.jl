@@ -24,11 +24,11 @@
 
     @test all(TO_exact.TO .== TO_exact_p.TO)
 
-    @test is_almostmarkov(TO)
-    @test is_almostmarkov(TO_approx)
-    @test is_almostmarkov(TO_approx_rand)
-    @test is_almostmarkov(TO_exact)
-    @test is_almostmarkov(TO_exact_p)
+    @test is_almost_markov(TO)
+    @test is_almost_markov(TO_approx)
+    @test is_almost_markov(TO_approx_rand)
+    @test is_almost_markov(TO_exact)
+    @test is_almost_markov(TO_exact_p)
 
     @test is_markov(TO)
     @test is_markov(TO_approx)
@@ -36,7 +36,7 @@
     @test is_markov(TO_exact)
     @test is_markov(TO_exact_p)
 
-    # Transfer operators from triangulations *not guaranteed to be invariant*
+    # Transfer operators from regular triangulations *not guaranteed to be invariant*
     TO = transferoperator(triang)
     TO_approx = transferoperator(triang, exact = false, parallel = false)
     TO_approx_rand = transferoperator(triang, exact = false,
@@ -49,11 +49,7 @@
     @test typeof(TO_approx_rand) == ApproxSimplexTransferOperator
     @test typeof(TO_exact) == ExactSimplexTransferOperator
     @test typeof(TO_exact_p) == ExactSimplexTransferOperator
-
     @test all(TO_exact.TO .== TO_exact_p.TO)
-
-    # We can no longer guarantee the transfer operator to be markov, but
-    # we should at least not have row sums greater than one.
 
 
 end
