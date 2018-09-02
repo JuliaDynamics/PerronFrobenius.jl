@@ -6,6 +6,7 @@ using Reexport
 using StaticArrays
 using InplaceOps
 using RecipesBase
+using GroupSlices
 
 import Parameters:
             @with_kw,
@@ -25,14 +26,18 @@ include("left_eigenvector.jl")
 export
     # Transfer operator types
     AbstractTransferOperator,
+	AbstractTriangulationTransferOperator,
     ApproxSimplexTransferOperator,
     ExactSimplexTransferOperator,
     RectangularBinningTransferOperator,
 
     # Methods on transfer operator types
     is_markov,
-    is_almostmarkov,
+    is_almost_markov,
     InvariantDistribution, left_eigenvector,
+
+	# Stuff needed for the estimators
+	organize_bin_labels, BinVisits,
 
     # Transfer operator estimators
     transferoperator,
