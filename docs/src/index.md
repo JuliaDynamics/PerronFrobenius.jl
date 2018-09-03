@@ -1,5 +1,3 @@
-# Example.jl Documentation
+# PerronFrobenius.jl Documentation
 
-```@docs
-func(x)
-```
+A package for computing invariant measures over partitioned phase spaces or state space reconstructions.

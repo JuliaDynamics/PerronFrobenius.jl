@@ -18,7 +18,7 @@ Compute the invariant probability distribution from a
 [`TransferOperator`](@ref). The distribution is obtained by repeated
 application of the transfer operator on an randomly initialised distribution
 	left_eigenvector(TO::EquidistantBinningTransferOperator; N=100,
-		tolerance=1/10^5, delta=1/10^5)
+		tolerance=1e-7, delta=1e-7)
 
 until the distribution converges.
 
@@ -27,7 +27,7 @@ Optional arguments are `N` (maximum number of iterations), `tolerance` and
 
 """
 function left_eigenvector(to::AbstractTransferOperator;
-			N::Int = 100, tolerance::Float64 = 1/10^5, delta::Float64 = 1/10^5)
+			N::Int = 200, tolerance::Float64 = 1e-7, delta::Float64 = 1e-7)
     #=
     # Start with a random distribution `Ρ` (big rho). Normalise it so that it
     # sums to 1 and forms a true probability distribution over the simplices.

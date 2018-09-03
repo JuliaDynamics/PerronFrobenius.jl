@@ -9,6 +9,7 @@ Base.getindex(to::AbstractTransferOperator, i::Vector) = to.TO[:, i]
 Base.getindex(to::AbstractTransferOperator, i::Int, j::Int) = to.TO[i, j]
 Base.getindex(to::AbstractTransferOperator, i::Colon, j::Int) = getindex(to, i)
 Base.getindex(to::AbstractTransferOperator, i::Int, j::Colon) = to[i, :]
+Base.sum(to::AbstractTransferOperator, i::Int) = sum(to.TO, i)
 
 #########################
 # Pretty printing
@@ -28,6 +29,13 @@ end
 
 Base.show(io::IO, to::T) where {T<:AbstractTransferOperator} = println(io, matstring(to))
 
+
+##################################################
+# Abstract type for transfer operators estimated
+# from triangulations.
+##################################################
+type TriangulationTransferOperator <: AbstractTransferOperator end
+
 ##################################################
 # Subtype for transfer operators estimated using
 # exact simplex volume intersections.
@@ -44,41 +52,22 @@ type ApproxSimplexTransferOperator <: AbstractTransferOperator
     TO::AbstractArray{Float64, 2}
 end
 
+
 ##################################################
-# Subtype for transfer operators estimated from
-# a rectangular binning.
+# Wrapper combining the different estimators for
+# triangulations.
 ##################################################
-type RectangularBinningTransferOperator  <: AbstractTransferOperator
-    TO::AbstractArray{Float64, 2}
-end
 
 """
-    is_markov(TO::AbstractTransferOperator) -> Bool
-
-Is the transfer operator Markov? """
-is_markov(TO::T) where T <: AbstractTransferOperator = all(sum(TO.TO, 2) .≈ 1)
-
-"""
-    is_almostmarkov(TO::AbstractTransferOperator; tol = 0.01) -> Bool
-
-Is the transfer operator almost Markov?
-"""
-is_almostmarkov(TO::AbstractTransferOperator; tol = 0.01) = all(sum(TO.TO, 2) .> (1 - tol))
-
-# Load estimator functions.
-include("rectangularbinestimators/equidistant.jl")
-include("simplexestimators/exact.jl")
-include("simplexestimators/pointapprox.jl")
-
-"""
-    transferoperator(triang::T; exact = false, parallel = true,
-                        n_pts = 200, sample_randomly = false)
-                        where T<:AbstractTriangulation
+    transferoperator(triang::AbstractTriangulation;
+                exact = false, parallel = true,
+                n_pts = 200, sample_randomly = false)
 
 Estimate the transfer operator from a triangulation.
 """
-function transferoperator(triang::T; exact = false, parallel = true,
-                        n_pts = 200, sample_randomly = false) where T<:AbstractTriangulation
+function transferoperator(triang::AbstractTriangulation;
+                            exact = false, parallel = true,
+                            n_pts = 200, sample_randomly = false)
     if exact
         if parallel
             transferoperator_exact_p(triang)
@@ -86,11 +75,16 @@ function transferoperator(triang::T; exact = false, parallel = true,
             transferoperator_exact(triang)
         end
     else
-        transferoperator_approx(triang, n_pts = n_pts, sample_randomly = sample_randomly)
+        transferoperator_approx(triang, n_pts = n_pts,
+                                sample_randomly = sample_randomly)
     end
 end
 
 
+#####################################################
+# How much do the exact and approximate triangulation
+# estimators differ?
+#####################################################
 """
     max_discrep(to1::ExactSimplexTransferOperator,
                 to2::ApproxSimplexTransferOperator)
@@ -105,3 +99,45 @@ function max_discrep(exact::ExactSimplexTransferOperator,
                      approx::ApproxSimplexTransferOperator)
 
 end
+
+
+##################################################
+# Subtype for transfer operators estimated from
+# a rectangular binning.
+##################################################
+type RectangularBinningTransferOperator  <: AbstractTransferOperator
+    TO::AbstractArray{Float64, 2}
+end
+
+
+##################################################
+# Implementations of the different estimators
+##################################################
+include("rectangularbinestimators/organize_binvisits.jl")
+include("rectangularbinestimators/binvisits_estimator.jl")
+include("simplexestimators/exact.jl")
+include("simplexestimators/pointapprox.jl")
+
+
+
+##################################################
+# Check if the obtained transfer matrices are
+# markov.
+##################################################
+"""
+    is_markov(TO::AbstractTransferOperator) -> Bool
+
+Is the transfer operator Markov? """
+is_markov(TO::AbstractTransferOperator) = all(sum(TO.TO, 2) .≈ 1)
+is_markov(M::AbstractArray{T, 2}) where T = all(sum(M, 2) .≈ 1)
+
+"""
+    is_almostmarkov(TO::AbstractTransferOperator; tol = 0.01) -> Bool
+
+Is the transfer operator almost Markov?
+"""
+is_almost_markov(TO::AbstractTransferOperator; tol = 0.01) =
+    all(sum(TO.TO, 2) .> (1 - tol))
+
+is_almost_markov(M::AbstractArray{T, 2}; tol = 0.01) where T =
+        all(sum(M, 2) .> (1 - tol))
