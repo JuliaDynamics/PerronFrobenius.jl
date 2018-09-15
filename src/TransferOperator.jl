@@ -34,13 +34,13 @@ Base.show(io::IO, to::T) where {T<:AbstractTransferOperator} = println(io, matst
 # Abstract type for transfer operators estimated
 # from triangulations.
 ##################################################
-type TriangulationTransferOperator <: AbstractTransferOperator end
+mutable struct TriangulationTransferOperator <: AbstractTransferOperator end
 
 ##################################################
 # Subtype for transfer operators estimated using
 # exact simplex volume intersections.
 ##################################################
-type ExactSimplexTransferOperator <: AbstractTransferOperator
+mutable struct ExactSimplexTransferOperator <: AbstractTransferOperator
     TO::AbstractArray{Float64, 2}
 end
 
@@ -48,7 +48,7 @@ end
 # Subtype for transfer operators estimated using
 # approximate simplex volume intersections.
 ##################################################
-type ApproxSimplexTransferOperator <: AbstractTransferOperator
+mutable struct ApproxSimplexTransferOperator <: AbstractTransferOperator
     TO::AbstractArray{Float64, 2}
 end
 
@@ -105,7 +105,7 @@ end
 # Subtype for transfer operators estimated from
 # a rectangular binning.
 ##################################################
-type RectangularBinningTransferOperator  <: AbstractTransferOperator
+mutable struct RectangularBinningTransferOperator  <: AbstractTransferOperator
     TO::AbstractArray{Float64, 2}
 end
 
