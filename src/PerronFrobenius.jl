@@ -23,6 +23,7 @@ abstract type TransferOperatorEstimator end
 include("TransferOperator.jl")
 include("left_eigenvector.jl")
 
+
 export
     # Transfer operator types
     AbstractTransferOperator,
@@ -41,6 +42,7 @@ export
 
     # Transfer operator estimators
     transferoperator,
+    transferoperator_grid,
     transferoperator_exact,
     transferoperator_exact_p,
     transferoperator_approx

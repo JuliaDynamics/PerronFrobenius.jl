@@ -1,5 +1,5 @@
 """
-    identify_pts_by_unique_index(A, U) -> Vector{Int}
+    whichpoints_visit_whichbins(A, U) -> Vector{Int}
 
 Given a sequence of unique elements from an array `U`, say
 U = [a b c e], which are taken from the array `A`, say
@@ -38,9 +38,9 @@ get visited by the orbit.
 i-th bin. If `first_visited_by[i] = 5`, then the i-th bin first got visited
 by the 5th point of the orbit.
 
-`repeated_visitors`. Vector with same length as there are visited bins.
-`repeated_visitors[i]` will give a vector containing  the (column)
-indices of the points visiting that bin. If `repeated_visitors[i] = [4, 12]`,
+`visitors`. Vector with same length as there are visited bins.
+`visitors[i]` will give a vector containing  the (column)
+indices of the points visiting that bin. If `visitors[i] = [4, 12]`,
 then the i-th bin was visited by points #4 and #12 of the embedding.
 
 `visits_whichbin`: Vector with same length as there are number of points.
@@ -52,7 +52,7 @@ visits the 5th visited bin.
 """
 struct BinVisits
     first_visited_by::Vector{Int}
-    repeated_visitors::Vector{Vector{Int}}
+    visitors::Vector{Vector{Int}}
     visits_whichbin::Vector{Int}
 end
 
@@ -70,11 +70,8 @@ See `assign_bin_labels` for more information.
 function organize_bin_labels(visited_bin_labels::Array{Int, 2})
     slices = groupslices(visited_bin_labels, 2)
     first_visited_by = firstinds(slices)
-    repeated_visitors = groupinds(slices)
-    visits_whichbin = whichpoints_visit_whichbins(
-                            visited_bin_labels,
-                    unique(visited_bin_labels, 2)
-    )
+    visitors = groupinds(slices)
+    visits_whichbin = whichpoints_visit_whichbins(visited_bin_labels, unique(visited_bin_labels, 2))
 
-    BinVisits(first_visited_by, repeated_visitors, visits_whichbin)
+    BinVisits(first_visited_by, visitors, visits_whichbin)
 end

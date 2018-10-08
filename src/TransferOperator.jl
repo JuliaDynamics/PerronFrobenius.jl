@@ -1,15 +1,12 @@
+
 abstract type AbstractTransferOperator end
 
 #########################
 # Indexing
 #########################
-Base.size(to::AbstractTransferOperator) = size(to.TO)
+Base.size(to::AbstractTransferOperator) = size(to.transfermatrix)
 Base.length(to::AbstractTransferOperator) = prod(size(to))
-Base.getindex(to::AbstractTransferOperator, i::Vector) = to.TO[:, i]
-Base.getindex(to::AbstractTransferOperator, i::Int, j::Int) = to.TO[i, j]
-Base.getindex(to::AbstractTransferOperator, i::Colon, j::Int) = getindex(to, i)
-Base.getindex(to::AbstractTransferOperator, i::Int, j::Colon) = to[i, :]
-Base.sum(to::AbstractTransferOperator, i::Int) = sum(to.TO, i)
+Base.sum(to::AbstractTransferOperator, i::Int) = sum(to.transfermatrix, i)
 
 #########################
 # Pretty printing
@@ -17,7 +14,7 @@ Base.sum(to::AbstractTransferOperator, i::Int) = sum(to.TO, i)
 function Base.summary(to::T) where T<:AbstractTransferOperator
     s = size(to)
     l = length(to)
-    percent_nonzero = @sprintf("%.4f", count(to.TO .> 0.0)/length(to) * 100)
+    percent_nonzero = @sprintf("%.4f", count(to.transfermatrix .> 0.0)/length(to) * 100)
 
     transferoperatortype = typeof(to)
     return "$transferoperatortype of size $s with $percent_nonzero% nonzero entries"
@@ -27,7 +24,8 @@ function matstring(to::T) where T<:AbstractTransferOperator
     return summary(to)
 end
 
-Base.show(io::IO, to::T) where {T<:AbstractTransferOperator} = println(io, matstring(to))
+Base.show(io::IO, to::T) where {T<:AbstractTransferOperator} =
+    println(io, matstring(to))
 
 
 ##################################################
@@ -41,7 +39,7 @@ type TriangulationTransferOperator <: AbstractTransferOperator end
 # exact simplex volume intersections.
 ##################################################
 type ExactSimplexTransferOperator <: AbstractTransferOperator
-    TO::AbstractArray{Float64, 2}
+    transfermatrix::AbstractArray{Float64, 2}
 end
 
 ##################################################
@@ -49,10 +47,76 @@ end
 # approximate simplex volume intersections.
 ##################################################
 type ApproxSimplexTransferOperator <: AbstractTransferOperator
-    TO::AbstractArray{Float64, 2}
+    transfermatrix::AbstractArray{Float64, 2}
 end
 
 
+
+##################################################
+# Subtype for transfer operators estimated from
+# a rectangular binning.
+##################################################
+type RectangularBinningTransferOperator  <: AbstractTransferOperator
+    transfermatrix::AbstractArray{Float64, 2}
+end
+
+
+##################################################
+# Implementations of the different estimators
+##################################################
+include("rectangularbinestimators/organize_binvisits.jl")
+include("rectangularbinestimators/binvisits_estimator.jl")
+include("rectangularbinestimators/gridestimator.jl")
+include("simplexestimators/exact.jl")
+include("simplexestimators/pointapprox.jl")
+
+
+##################################################
+# Check if the obtained transfer matrices are
+# markov.
+##################################################
+"""
+    is_markov(TO::AbstractTransferOperator) -> Bool
+
+Is the transfer operator Markov? """
+function is_markov(TO::AbstractTransferOperator)
+    all(sum(TO.transfermatrix, 2) .≈ 1)
+end
+
+function is_markov(M::AbstractArray{T, 2}) where T
+    all(sum(M, 2) .≈ 1)
+end
+
+"""
+    is_almostmarkov(TO::AbstractTransferOperator; tol = 0.01) -> Bool
+
+Is the transfer operator almost Markov?
+"""
+function is_almost_markov(TO::AbstractTransferOperator; tol = 1e-3)
+    all(sum(TO.transfermatrix, 2) .> (1 - tol))
+end
+
+function is_almost_markov(M::AbstractArray{T, 2}; tol = 1e-3) where T
+    all(sum(M, 2) .> (1 - tol))
+end
+
+function zerocols(M::AbstractArray{T, 2}) where T
+    find(sum(M, 1) .== 0)
+end
+
+function zerorows(M::AbstractArray{T, 2}) where T
+    find(sum(M, 2) .== 0)
+end
+
+function zerocols(TO::AbstractTransferOperator)
+    find(sum(TO.transfermatrix, 1) .== 0)
+end
+
+function zerorows(TO::AbstractTransferOperator)
+    find(sum(TO.transfermatrix, 2) .== 0)
+end
+
+export zerocols, zerorows
 ##################################################
 # Wrapper combining the different estimators for
 # triangulations.
@@ -99,45 +163,3 @@ function max_discrep(exact::ExactSimplexTransferOperator,
                      approx::ApproxSimplexTransferOperator)
 
 end
-
-
-##################################################
-# Subtype for transfer operators estimated from
-# a rectangular binning.
-##################################################
-type RectangularBinningTransferOperator  <: AbstractTransferOperator
-    TO::AbstractArray{Float64, 2}
-end
-
-
-##################################################
-# Implementations of the different estimators
-##################################################
-include("rectangularbinestimators/organize_binvisits.jl")
-include("rectangularbinestimators/binvisits_estimator.jl")
-include("simplexestimators/exact.jl")
-include("simplexestimators/pointapprox.jl")
-
-
-
-##################################################
-# Check if the obtained transfer matrices are
-# markov.
-##################################################
-"""
-    is_markov(TO::AbstractTransferOperator) -> Bool
-
-Is the transfer operator Markov? """
-is_markov(TO::AbstractTransferOperator) = all(sum(TO.TO, 2) .≈ 1)
-is_markov(M::AbstractArray{T, 2}) where T = all(sum(M, 2) .≈ 1)
-
-"""
-    is_almostmarkov(TO::AbstractTransferOperator; tol = 0.01) -> Bool
-
-Is the transfer operator almost Markov?
-"""
-is_almost_markov(TO::AbstractTransferOperator; tol = 0.01) =
-    all(sum(TO.TO, 2) .> (1 - tol))
-
-is_almost_markov(M::AbstractArray{T, 2}; tol = 0.01) where T =
-        all(sum(M, 2) .> (1 - tol))

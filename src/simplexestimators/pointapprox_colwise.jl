@@ -56,6 +56,11 @@ end
     end
 end
 
+
+"""
+Check if a point is contained in a simplex, using preallocated arrays
+    `signs`, `s_arr`.
+"""
 function contained!(signs, s_arr, sx, point, dim)
     # Redefine the temporary simplex. This is in-place, so we don't allocate
     # memory. We could also have re-initialised `signs`, but since we're never
@@ -74,7 +79,7 @@ function contained!(signs, s_arr, sx, point, dim)
     fill_into!(s_arr, sx) #reset
 
     for κ = 2:dim # Check remaining signs and stop if sign changes
-        # Replace the ith vertex with the point we're cheking (leaving the
+        # Replace the ith vertex with the point we're checking (leaving the
         # 1 appended to Vi intact.)
         idxs = ((dim + 1)*(κ - 1)+1):((dim + 1)*(κ - 1)+ 1 + dim - 1)
         fill_at_inds!(s_arr, point, idxs) # ith change
@@ -117,7 +122,7 @@ function get_simplices_at_inds!(simps, inds::Vector{Int}, simplices)
 end
 
 """
-    transferoperator_approx(t::Triangulation;
+    transferoperator(t::Triangulation;
                         n_pts::Int = 200,
                         sample_randomly::Bool = false)
 
@@ -136,19 +141,14 @@ in the entries of the transfer operator of < 10%.
 Points can also be distributed according to a uniform distribution by setting
 `sample_randomly = true`, but this decreases accuracy and is not recommended.
 """
-function transferoperator_approx(t::AbstractTriangulation;
+function transferoperator_approx(E::AbstractEmbedding,
+								tri::DelaunayTriangulation;
                             n_pts::Int = 200,
                             sample_randomly::Bool = false)
 
     # Some constants used throughout the funciton
-    n_simplices::Int = size(t.simplex_inds, 1)
-    dim = size(t.points, 2)
-
-    #=
-    # Prepare memory-efficient representations of the simplices, and the convex
-    # coefficients needed to generate points.
-    =#
-    simplices, imsimplices = prepare_for_discrete_approx(t)
+    n_simplices::Int = size(tri, 2)
+    dim = size(E.points, 1)
 
     convex_coeffs = subsample_coeffs(dim, n_pts, sample_randomly)
     #=
@@ -157,7 +157,6 @@ function transferoperator_approx(t::AbstractTriangulation;
     # shape-preserving splitting depends only on the dimension of the space,
     # there will be more points than we asked for).
     =#
-
     n_coeffs::Int = size(convex_coeffs, 2)
 
     # Pre-allocated arrays (SizedArrays, for efficiency)
@@ -190,11 +189,4 @@ function transferoperator_approx(t::AbstractTriangulation;
     end
 
     return ApproxSimplexTransferOperator(M.' ./ n_coeffs)
-end
-
-
-function transferoperator_approx(E::AbstractEmbedding;
-                            n_pts::Int = 200,
-                            sample_randomly::Bool = false)
-    transferoperator_approx(triangulate(E))
 end

@@ -27,12 +27,12 @@ Optional arguments are `N` (maximum number of iterations), `tolerance` and
 
 """
 function left_eigenvector(to::AbstractTransferOperator;
-			N::Int = 200, tolerance::Float64 = 1e-7, delta::Float64 = 1e-7)
+			N::Int = 200, tolerance::Float64 = 1e-8, delta::Float64 = 1e-8)
     #=
     # Start with a random distribution `Ρ` (big rho). Normalise it so that it
     # sums to 1 and forms a true probability distribution over the simplices.
     =#
-    Ρ = rand(Float64, 1, size(to.TO, 1))
+    Ρ = rand(Float64, 1, size(to.transfermatrix, 1))
     Ρ = Ρ ./ sum(Ρ, 2)
 
     #=
@@ -42,7 +42,7 @@ function left_eigenvector(to::AbstractTransferOperator;
     # meaning that we iterate until Ρ doesn't change substantially between
     # iterations.
     =#
-    distribution = Ρ * to.TO
+    distribution = Ρ * to.transfermatrix
 
     distance = norm(distribution - Ρ) / norm(Ρ)
 
@@ -58,7 +58,7 @@ function left_eigenvector(to::AbstractTransferOperator;
         Ρ = distribution
 
         # Apply the Markov matrix to the current state of the distribution
-        distribution = Ρ * to.TO
+        distribution = Ρ * to.transfermatrix
 
         if (check_pts_counter <= num_checkpts &&
            counter == check_pts[check_pts_counter])
@@ -81,7 +81,7 @@ function left_eigenvector(to::AbstractTransferOperator;
     end
 
     # Find partition elements with strictly positive measure.
-    simplex_inds_nonzero = find(distribution .> (tolerance/size(to.TO, 1)))
+    simplex_inds_nonzero = find(distribution .> (tolerance/size(to.transfermatrix, 1)))
 
     # Extract the elements of the invariant measure corresponding to these indices
     return PerronFrobenius.InvariantDistribution(vec(distribution),simplex_inds_nonzero)

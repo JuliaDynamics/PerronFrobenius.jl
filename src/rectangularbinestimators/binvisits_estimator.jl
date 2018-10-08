@@ -1,8 +1,16 @@
 """
-    transferoperator(bv::BinVisits)
+    transferoperator(bv::BinVisits; allocate_frac = 1.0)
 
 Estimate transfer operator from information about which bin
 gets visited by which points of the orbit.
+
+To determine the transition probabilities, we pre-allocate two index vectors
+(`I` and `J`) and a probability vector (`P`). After the transition probabilities
+have been determined, the vectors are combined into a sparse matrix (the
+transfer matrix), which typically have very few nonzero entries (often only a
+few percent). To not allocate too much memory, `allocate_frac` controls what
+fraction of the total number of possible transitions (``n_states^2``) we
+pre-allocate.
 
 ## Example usage
 
@@ -26,96 +34,110 @@ visited_bins = assign_bin_labels(E, ϵ)
 binvisits = organize_bin_labels(visited_bins)
 
 # Use that information to estimate transfer operator
-TO = transferoperator2(binvisits)
+TO = transferoperator(binvisits)
 
 # Verify that TO is Markov (NB. last row might be zero!,
 # then this test might fail)
 all(sum(TO, 2) .≈ 1)
 ```
 """
-function transferoperator(bv::BinVisits)
+function transferoperator(bv::BinVisits, allocate_frac::Float64,
+        boundary_condition = :none)
+
+    valid_boundary_conditions = [:none, :exclude, :circular, :invariantize]
+    if !(boundary_condition ∈ valid_boundary_conditions)
+        error("Boundary condition $boundary_condition not valid.")
+    end
+
+    if !(0 < allocate_frac <= 1)
+        error("allocate_frac needs to be on the interval (0, 1]")
+    end
+
     first_visited_by = bv.first_visited_by
-    repeated_visitors = bv.repeated_visitors
+    visitors = bv.visitors
     visits_whichbin = bv.visits_whichbin
+    n_visited_bins = length(first_visited_by)
+
 
     # Initialise transfer (Perron-Frobenius) operator as a sparse matrix
     # (keep track of indices and values in separate columns for now)
-    n_possible_nonzero_entries = length(first_visited_by)^2
-    I = zeros(Int, n_possible_nonzero_entries)
-    J = zeros(Int, n_possible_nonzero_entries)
-    V = zeros(Float64, n_possible_nonzero_entries)
+    n_possible_nonzero_entries = n_visited_bins^2
+    N = ceil(Int, n_possible_nonzero_entries / allocate_frac)
 
-    max_row = 0
+    I = zeros(Int32, N)
+    J = zeros(Int32, N)
+    P = zeros(Float64, N)
 
     # Preallocate target index for the case where there is only
     # one point of the orbit visiting a bin.
     target_bin_j::Int = 0
     n_visitsᵢ::Int = 0
-    for i in 1:length(first_visited_by)
+
+    # Keep track of how many transitions we've considered.
+    transition_counter = 0
+
+    if boundary_condition == :circular
+        #warn("Using circular boundary condition")
+        append!(visits_whichbin, [1])
+    end
+
+    # Loop over the visited bins bᵢ
+    for i in 1:n_visited_bins
         # How many times is this bin visited?
-        n_visitsᵢ = length(repeated_visitors[i])
+        n_visitsᵢ = length(visitors[i])
 
-        # If there is only one point and it happens to be the last,
-        # we skip it, because we don't know its image. Otherwise,
-        # we
-        if n_visitsᵢ == 1
-            if !(i == visits_whichbin[end])
+        # If both conditions below are true, then there is just one
+        # point visiting the i-th bin. If there is only one visiting point and
+        # it happens to be the last, we skip it, because we don't know its
+        # image.
+        if n_visitsᵢ == 1 && !(i == visits_whichbin[end])
+            transition_counter += 1
 
-                # Keep track of how many transitions we've considered.
-                max_row += 1
+            # To which bin does the single point visiting bᵢ jump if we
+            # shift it one time step ahead along its orbit?
+            target_bin_j = visits_whichbin[visitors[i] + 1][1]
 
-                I[max_row] = i
-                # If this part of the code gets visited, there is
-                # just one point visiting the i-th bin. To which bin
-                # does this point jump if we shift the point one
-                # time step ahead in time along its orbit?
-                target_bin_j = visits_whichbin[repeated_visitors[i] + 1][1]
+            # We now know that exactly one point (the i-th) does the
+            # transition from i to the target j.
+            I[transition_counter] = i
+            J[transition_counter] = target_bin_j
+            P[transition_counter] = 1
+        end
+        # If more than one point of the orbit visits the i-th bin, we
+        # identify the visiting points and track which bins bⱼ they end up
+        # in after the forward linear map of the points.
+        if n_visitsᵢ > 1
+            timeindices_visiting_pts = visitors[i]
 
-                # We now know that exactly one point, the i-th, does the
-                # transition from i to the target j.
-                J[max_row] = target_bin_j
-                V[max_row] = 1
-            end
+            # TODO: Introduce circular boundary condition. Simply excluding
+            # might lead to a cascade of loosing points.
 
-        # If more than one point visits the bin,
-        elseif n_visitsᵢ > 1
-            # identify find which points of the orbit visits the i-th bin.
-            visiting_pts = repeated_visitors[i]
-
-            # If the visited bin under consideration is the last,
-            # we  exclude the last point that visits it - that point
-            # will have nowhere to go along its orbit in the next
-            # time step, because it is the last point in the orbit.
+            # If bᵢ is the bin visited by the last point in the orbit, then
+            # the last entry of `visiting_pts` will be the time index of the
+            # last point of the orbit. In the next time step, that point will
+            # have nowhere to go along its orbit (precisely because it is the
+            # last data point). Thus, we exclude it.
             if i == visits_whichbin[end]
-                n_visitsᵢ = length(visiting_pts) - 1
-                visiting_pts = visiting_pts[1:(end - 1)]
+                #warn("Removing last point")
+                n_visitsᵢ = length(timeindices_visiting_pts) - 1
+                timeindices_visiting_pts = timeindices_visiting_pts[1:(end - 1)]
             end
 
-            # To which boxes do each of the points visiting the i-th bin
-            # jump in the next time step?
-            target_bins_j = visits_whichbin[visiting_pts .+ 1]
+            # To which boxes do each of the visitors to bᵢ jump in the next
+            # time step?
+            target_bins = visits_whichbin[timeindices_visiting_pts .+ 1]
+            unique_target_bins = unique(target_bins)
 
-
-            # How many unique target bins are there?
-            unique_target_bins = unique(target_bins_j)
-
-            # For each of the j unique target bins count how many
-            # points jump from the i-th bin to that target bin.
+            # Count how many points jump from the i-th bin to each of
+            # the unique target bins, and use that to calculate the transition
+            # probability from bᵢ to bⱼ.
             for j in 1:length(unique_target_bins)
-                # How many points jump from the i-th bin to this j-th bin?
-                n_transitions_i_to_j = sum(target_bins_j .== unique_target_bins[j])
+                n_transitions_i_to_j = sum(target_bins .== unique_target_bins[j])
 
-                # Keep track of how many transitions we've considered.
-                max_row += 1
-
-                # We now know how many points jumps from the i-th bin
-                # to the j-th bin. Normalize by the number of points
-                # visiting the i-th bin
-                I[max_row] = i
-                J[max_row] = unique_target_bins[j]
-                V[max_row] = n_transitions_i_to_j / n_visitsᵢ
-
-
+                transition_counter += 1
+                I[transition_counter] = i
+                J[transition_counter] = unique_target_bins[j]
+                P[transition_counter] = n_transitions_i_to_j / n_visitsᵢ
             end
         end
     end
@@ -124,33 +146,29 @@ function transferoperator(bv::BinVisits)
     # Frobenius operator (transfer operator). Filter out the nonzero entries.
     # The number of rows in the matrix is given by the number of unique points
     # we have in the embedding.
-    n_rows = length(first_visited_by)
-    TO = sparse(I[1:max_row], J[1:max_row], V[1:max_row], n_rows, n_rows)
-    RectangularBinningTransferOperator(Array(TO))
-end
+    TO = Array(sparse(I[1:transition_counter],
+                J[1:transition_counter],
+                P[1:transition_counter],
+                n_visited_bins, n_visited_bins))
 
-"""
- transferoperator(
-        E::AbstractEmbedding,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}}
-) -> RectangularBinningTransferOperator
+    # There may be boxes which are visited by points of the orbit, but not by
+    # any image points.
+    # zc = zerocols(TO)
+    # l = length(zc)
+    # if l > 0
+    #     col = zc[1]
+    #     warn("There were $l all-zero columns. Column $col is the culprit -> normalizing ...")
+    #     TO = TO ./ sum(TO, 2)
+    # end
+    # If the first bin is not visited, make every point starting in that bin
+    # jump to the same bin with probability one.
+    # zc = zerocols(TO)
+    # if length(zc) > 0
+    #     warn("There were $l all-zero columns: column $col")
+    #     @show zc
+    #     i = zc[1]
+    #     TO[i, 1] = 1.0
+    # end
 
-Estimates the transfer operator given an embedding and ϵ,
-the latter controlling the binning procedure. See docs
-for `StateSpaceReconstruction.assign_bin_labels`.
-"""
-function transferoperator(
-        E::AbstractEmbedding,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}})
-
-    # Identify which bins of the partition resulting from using ϵ each
-    # point of the embedding visits.
-    visited_bins = assign_bin_labels(E, ϵ)
-
-    # Which are the visited bins, which points
-    # visits which bin, repetitions, etc...
-    binvisits = organize_bin_labels(visited_bins)
-
-    # Use that information to estimate transfer operator
-    transferoperator(binvisits)
+    RectangularBinningTransferOperator(TO)
 end
