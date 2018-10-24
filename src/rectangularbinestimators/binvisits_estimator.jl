@@ -79,7 +79,10 @@ function transferoperator(bv::BinVisits, allocate_frac::Float64,
     if boundary_condition == :circular
         #warn("Using circular boundary condition")
         append!(visits_whichbin, [1])
-    end
+    elseif boundary_condition == :random
+        #warn("Using random circular boundary condition")
+		append!(visits_whichbin, [rand(1:length(visits_whichbin))])
+	end
 
     # Loop over the visited bins bᵢ
     for i in 1:n_visited_bins

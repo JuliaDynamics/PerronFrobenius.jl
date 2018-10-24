@@ -95,3 +95,5 @@ function transferoperator_grid(
     # Use that information to estimate transfer operator
     transferoperator(binvisits, allocate_frac, boundary_condition)
 end
+
+include("gridestimator_average.jl")
