@@ -22,7 +22,7 @@
     @test typeof(TO_exact) == ExactSimplexTransferOperator
     @test typeof(TO_exact_p) == ExactSimplexTransferOperator
 
-    @test all(TO_exact.TO .== TO_exact_p.TO)
+    @test all(TO_exact.transfermatrix .== TO_exact_p.transfermatrix)
 
     @test is_almost_markov(TO)
     @test is_almost_markov(TO_approx)
@@ -49,7 +49,7 @@
     @test typeof(TO_approx_rand) == ApproxSimplexTransferOperator
     @test typeof(TO_exact) == ExactSimplexTransferOperator
     @test typeof(TO_exact_p) == ExactSimplexTransferOperator
-    @test all(TO_exact.TO .== TO_exact_p.TO)
+    @test all(TO_exact.transfermatrix .== TO_exact_p.transfermatrix)
 
 
 end
