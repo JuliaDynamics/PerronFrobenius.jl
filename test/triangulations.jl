@@ -51,5 +51,4 @@
     @test typeof(TO_exact_p) == ExactSimplexTransferOperator
     @test all(TO_exact.transfermatrix .== TO_exact_p.transfermatrix)
 
-
 end

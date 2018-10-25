@@ -1,5 +1,4 @@
 using Base.Test
-using JLD2, FileIO
 using StateSpaceReconstruction
 using PerronFrobenius
 

@@ -34,7 +34,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_binvisits_2D.jld2" TO, E_2D, bininfo
+                            #@save "from_binvisits_2D.jld2" TO, E_2D, bininfo
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -56,7 +56,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_binvisits_3D.jld2" TO, E_3D, bininfo
+                            #@save "from_binvisits_3D.jld2" TO, E_3D, bininfo
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -78,7 +78,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_binvisits_4D.jld2" TO, E_4D, bininfo
+                            #@save "from_binvisits_4D.jld2" TO, E_4D, bininfo
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -97,7 +97,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_embedding_2D.jld2" TO, E_2D
+                            #@save "from_embedding_2D.jld2" TO, E_2D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -113,7 +113,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_embedding_3D.jld2" TO, E_3D
+                            #@save "from_embedding_3D.jld2" TO, E_3D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -129,7 +129,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_embedding_4D.jld2" TO, E_4D
+                            #@save "from_embedding_4D.jld2" TO, E_4D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -149,7 +149,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_points_2D.jld2" TO, points_2D
+                            #@save "from_points_2D.jld2" TO, points_2D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -167,7 +167,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_points_3D.jld2" TO, points_3D
+                            #@save "from_points_3D.jld2" TO, points_3D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
@@ -183,7 +183,7 @@
                             info("That made the transfer matrix Markov")
                         else
                             warn("That did NOT make the transfer matrix Markov")
-                            @save "from_points_4D.jld2" TO, points_4D
+                            #@save "from_points_4D.jld2" TO, points_4D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
                     end
