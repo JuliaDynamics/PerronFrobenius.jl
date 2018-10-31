@@ -41,7 +41,7 @@ TO = transferoperator(binvisits)
 all(sum(TO, 2) .≈ 1)
 ```
 """
-function transferoperator(bv::BinVisits, allocate_frac::Float64,
+function transferoperator(bv::BinVisits, allocate_frac::Float64 = 1,
         boundary_condition = :none)
 
     valid_boundary_conditions = [:none, :exclude, :circular, :invariantize]
