@@ -1,10 +1,12 @@
+language: julia
+os:
+  - linux
 julia:
   - nightly
   - 1.0
-  - 0.7
 matrix:
-  allow_failures:
-    - julia: nightly
+allow_failures:
+- julia: nightly
 
 script:
   - julia -e 'using Pkg; Pkg.build(); Pkg.add("PyCall")'
