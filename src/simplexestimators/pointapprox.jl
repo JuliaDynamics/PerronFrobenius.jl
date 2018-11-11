@@ -17,8 +17,8 @@ function prepare_for_discrete_approx(t::AbstractTriangulation)
     # would have appended the 1's inside that function, we would be performing
     # memory-allocating operations, which are very expensive. Doing this instead
     # gives orders of magnitude speed-ups for sufficiently large triangulations.
-    S1 = Array{Float64}(dim + 1, dim + 1, n_simplices)
-    IS1 = Array{Float64}(dim + 1, dim + 1, n_simplices)
+    S1 = Array{Float64}(undef, dim + 1, dim + 1, n_simplices)
+    IS1 = Array{Float64}(undef, dim + 1, dim + 1, n_simplices)
 
     # Collect simplices in the form of (dim+1)^2-length column vectors. This
     # also helps with the
@@ -166,8 +166,8 @@ function transferoperator_approx(t::AbstractTriangulation;
     signs       = Size(dim + 1)(zeros(Float64, dim + 1))
 
     # Re-arrange simplices so that look-up is a bit more efficient
-    simplex_arrs = Vector{Array{Float64, 2}}(n_simplices)
-    imsimplex_arrs = Vector{Array{Float64, 2}}(n_simplices)
+    simplex_arrs = Vector{Array{Float64, 2}}(undef, n_simplices)
+    imsimplex_arrs = Vector{Array{Float64, 2}}(undef, n_simplices)
     for i in 1:n_simplices
         simplex_arrs[i] = t.points[t.simplex_inds[i, :], :]
         imsimplex_arrs[i] = t.impoints[t.simplex_inds[i, :], :]
@@ -178,22 +178,22 @@ function transferoperator_approx(t::AbstractTriangulation;
 
     for i in 1:n_simplices
         inds::Vector{Int} = maybeintersecting_simplices(t, i)
-        Sj = Vector{AbstractArray}(length(inds))
+        Sj = Vector{AbstractArray}(undef, length(inds))
         get_simplices_at_inds!(Sj, inds, simplices)
 
         @views is = imsimplex_arrs[i]
 
         for k in 1:n_coeffs
-            InplaceOps.@into! pt = convex_coeffs[:, k].' * is
+            @! pt = transpose(convex_coeffs[:, k]) * is
             innerloop!(inds, signs, s_arr, Sj, pt, dim, M, i)
         end
     end
 
-    return ApproxSimplexTransferOperator(M.' ./ n_coeffs)
+    return ApproxSimplexTransferOperator(transpose(M) ./ n_coeffs)
 end
 
 
-function transferoperator_approx(E::AbstractEmbedding;
+function transferoperator_approx(E::Embeddings.AbstractEmbedding;
                             n_pts::Int = 200,
                             sample_randomly::Bool = false)
     transferoperator_approx(triangulate(E))

@@ -41,8 +41,7 @@ TO = transferoperator(binvisits)
 all(sum(TO, 2) .≈ 1)
 ```
 """
-function transferoperator(bv::BinVisits, allocate_frac::Float64 = 1,
-        boundary_condition = :none)
+function transferoperator(bv::BinVisits, allocate_frac::Float64 = 1, boundary_condition = :none)
 
     valid_boundary_conditions = [:none, :exclude, :circular, :invariantize]
     if !(boundary_condition ∈ valid_boundary_conditions)
@@ -95,10 +94,9 @@ function transferoperator(bv::BinVisits, allocate_frac::Float64 = 1,
         # image.
         if n_visitsᵢ == 1 && !(i == visits_whichbin[end])
             transition_counter += 1
-
             # To which bin does the single point visiting bᵢ jump if we
             # shift it one time step ahead along its orbit?
-            target_bin_j = visits_whichbin[visitors[i] + 1][1]
+            target_bin_j = visits_whichbin[visitors[i][1] + 1][1]
 
             # We now know that exactly one point (the i-th) does the
             # transition from i to the target j.
@@ -175,3 +173,8 @@ function transferoperator(bv::BinVisits, allocate_frac::Float64 = 1,
 
     RectangularBinningTransferOperator(TO)
 end
+
+ transferoperator(bv::BinVisits;
+    allocate_frac::Float64 = 1.0,
+    boundary_condition::Symbol = :none) =
+        transferoperator(bv, allocate_frac, boundary_condition)
