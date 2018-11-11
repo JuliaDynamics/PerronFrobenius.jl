@@ -13,16 +13,16 @@
     TO = transferoperator(triang_inv)
     TO_approx = transferoperator(triang_inv, exact = false, parallel = false)
     TO_approx_rand = transferoperator(triang_inv, exact = false, parallel = false, sample_randomly = true)
-    TO_exact = transferoperator(triang_inv, exact = true, parallel = false)
-    TO_exact_p = transferoperator(triang_inv, exact = true, parallel = true)
+    #TO_exact = transferoperator(triang_inv, exact = true, parallel = false)
+    #TO_exact_p = transferoperator(triang_inv, exact = true, parallel = true)
 
     @test typeof(TO) == ApproxSimplexTransferOperator #default = approx
     @test typeof(TO_approx) == ApproxSimplexTransferOperator
     @test typeof(TO_approx_rand) == ApproxSimplexTransferOperator
-    @test typeof(TO_exact) == ExactSimplexTransferOperator
-    @test typeof(TO_exact_p) == ExactSimplexTransferOperator
+    #@test typeof(TO_exact) == ExactSimplexTransferOperator
+    #@test typeof(TO_exact_p) == ExactSimplexTransferOperator
 
-    @test all(TO_exact.transfermatrix .== TO_exact_p.transfermatrix)
+    #@test all(TO_exact.transfermatrix .== TO_exact_p.transfermatrix)
 
     # Approximations to intersections
     @test is_markov(TO)
@@ -33,7 +33,7 @@
     @test is_almost_markov(TO_approx_rand)
 
     # Exact intersections
-    
+
     #@test is_almost_markov(TO_exact)
     #@test is_almost_markov(TO_exact_p)
     #@test is_markov(TO_exact)
@@ -44,14 +44,14 @@
     TO_approx = transferoperator(triang, exact = false, parallel = false)
     TO_approx_rand = transferoperator(triang, exact = false,
 					parallel = false, sample_randomly = true)
-    TO_exact = transferoperator(triang, exact = true, parallel = false)
-    TO_exact_p = transferoperator(triang, exact = true, parallel = true)
+    #TO_exact = transferoperator(triang, exact = true, parallel = false)
+    #TO_exact_p = transferoperator(triang, exact = true, parallel = true)
 
     @test typeof(TO) == ApproxSimplexTransferOperator #default = approx
     @test typeof(TO_approx) == ApproxSimplexTransferOperator
     @test typeof(TO_approx_rand) == ApproxSimplexTransferOperator
-    @test typeof(TO_exact) == ExactSimplexTransferOperator
-    @test typeof(TO_exact_p) == ExactSimplexTransferOperator
-    @test all(TO_exact.transfermatrix .== TO_exact_p.transfermatrix)
+    #@test typeof(TO_exact) == ExactSimplexTransferOperator
+    #@test typeof(TO_exact_p) == ExactSimplexTransferOperator
+    #@test all(TO_exact.transfermatrix .== TO_exact_p.transfermatrix)
 
 end

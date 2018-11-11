@@ -33,7 +33,7 @@ function left_eigenvector(to::AbstractTransferOperator;
     # sums to 1 and forms a true probability distribution over the simplices.
     =#
     Ρ = rand(Float64, 1, size(to.transfermatrix, 1))
-    Ρ = Ρ ./ sum(Ρ, 2)
+    Ρ = Ρ ./ sum(Ρ, dims = 2)
 
     #=
     # Start estimating the invariant distribution. We could either do this by
@@ -64,7 +64,7 @@ function left_eigenvector(to::AbstractTransferOperator;
            counter == check_pts[check_pts_counter])
 
             check_pts_counter += 1
-            colsum_distribution = sum(distribution, 2)[1]
+            colsum_distribution = sum(distribution, dims = 2)[1]
             if abs(colsum_distribution - 1) > delta
                 distribution = distribution ./ colsum_distribution
             end
@@ -72,17 +72,23 @@ function left_eigenvector(to::AbstractTransferOperator;
 
         distance = norm(distribution - Ρ) / norm(Ρ)
     end
+    distribution = dropdims(distribution, dims = 1)
 
     # Do the last normalisation and check
-    colsum_distribution = sum(distribution, 2)[1]
+    colsum_distribution = sum(distribution)
 
     if abs(colsum_distribution - 1) > delta
         distribution = distribution ./ colsum_distribution
     end
 
     # Find partition elements with strictly positive measure.
-    simplex_inds_nonzero = find(distribution .> (tolerance/size(to.transfermatrix, 1)))
+    δ = tolerance/size(to.transfermatrix, 1)
+    simplex_inds_nonzero = findall(distribution .> δ)
 
     # Extract the elements of the invariant measure corresponding to these indices
-    return PerronFrobenius.InvariantDistribution(vec(distribution),simplex_inds_nonzero)
+    return PerronFrobenius.InvariantDistribution(distribution,simplex_inds_nonzero)
 end
+
+
+invariantmeasure = left_eigenvector
+export invariantmeasure
