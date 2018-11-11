@@ -1,8 +1,10 @@
-julia 0.6 0.7-
+julia 0.7
 RecipesBase
 Reexport
-StaticArrays
 InplaceOps
 Parameters
-Simplices
-StateSpaceReconstruction
+StaticArrays
+Documenter
+PyCall
+Conda
+StateSpaceReconstruction 0.2
