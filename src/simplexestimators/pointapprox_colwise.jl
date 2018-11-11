@@ -141,7 +141,7 @@ in the entries of the transfer operator of < 10%.
 Points can also be distributed according to a uniform distribution by setting
 `sample_randomly = true`, but this decreases accuracy and is not recommended.
 """
-function transferoperator_approx(E::AbstractEmbedding,
+function transferoperator_approx(E::Embeddings.AbstractEmbedding,
 								tri::DelaunayTriangulation;
                             n_pts::Int = 200,
                             sample_randomly::Bool = false)
@@ -165,8 +165,8 @@ function transferoperator_approx(E::AbstractEmbedding,
     signs       = Size(dim + 1)(zeros(Float64, dim + 1))
 
     # Re-arrange simplices so that look-up is a bit more efficient
-    simplex_arrs = Vector{Array{Float64, 2}}(n_simplices)
-    imsimplex_arrs = Vector{Array{Float64, 2}}(n_simplices)
+    simplex_arrs = Vector{Array{Float64, 2}}(undef, n_simplices)
+    imsimplex_arrs = Vector{Array{Float64, 2}}(undef, n_simplices)
     for i in 1:n_simplices
         simplex_arrs[i] = t.points[t.simplex_inds[i, :], :]
         imsimplex_arrs[i] = t.impoints[t.simplex_inds[i, :], :]
@@ -183,10 +183,14 @@ function transferoperator_approx(E::AbstractEmbedding,
         @views is = imsimplex_arrs[i]
 
         for k in 1:n_coeffs
-            InplaceOps.@into! pt = convex_coeffs[:, k].' * is
+            @! pt = transpose(convex_coeffs[:, k]) * is
             innerloop!(inds, signs, s_arr, Sj, pt, dim, M, i)
         end
     end
 
-    return ApproxSimplexTransferOperator(M.' ./ n_coeffs)
+    return ApproxSimplexTransferOperator(transpose(M) ./ n_coeffs)
 end
+
+
+transferoperator_triang_approx = transferoperator_approx
+export transferoperator_triang_approx

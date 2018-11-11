@@ -71,7 +71,7 @@ function organize_bin_labels(visited_bin_labels::Array{Int, 2})
     slices = groupslices(visited_bin_labels, 2)
     first_visited_by = firstinds(slices)
     visitors = groupinds(slices)
-    visits_whichbin = whichpoints_visit_whichbins(visited_bin_labels, unique(visited_bin_labels, 2))
+    visits_whichbin = whichpoints_visit_whichbins(visited_bin_labels, unique(visited_bin_labels, dims = 2))
 
     BinVisits(first_visited_by, visitors, visits_whichbin)
 end

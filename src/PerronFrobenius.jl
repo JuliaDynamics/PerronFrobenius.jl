@@ -3,10 +3,20 @@ __precompile__(true)
 module PerronFrobenius
 
 using Reexport
+@reexport using StateSpaceReconstruction
+using StateSpaceReconstruction: GroupSlices
+using StateSpaceReconstruction: Embeddings
+import StateSpaceReconstruction.Embeddings.AbstractEmbedding
+
+using Distributed
+using SharedArrays
 using StaticArrays
+using SparseArrays
 using InplaceOps
 using RecipesBase
-using GroupSlices
+using Printf
+using Documenter
+using LinearAlgebra
 
 import Parameters:
             @with_kw,
@@ -15,7 +25,6 @@ import Parameters:
 using Simplices:
             subsample_coeffs,
             simplexintersection
-@reexport using StateSpaceReconstruction
 
 # Abstract estimator type
 abstract type TransferOperatorEstimator end

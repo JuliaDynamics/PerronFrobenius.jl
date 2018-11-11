@@ -29,8 +29,8 @@ function transferoperator_exact(t::AbstractTriangulation)
             if vol * imvol > 0 && (vol/imvol) > ϵ
                 # Intersecting volume between these two simplices
                 TO[i, j] = simplexintersection(
-                                t.points[t.simplex_inds[j, :], :].',
-                                t.impoints[t.simplex_inds[i, :], :].'
+                                transpose(t.points[t.simplex_inds[j, :], :]),
+                                transpose(t.impoints[t.simplex_inds[i, :], :])
                             ) / imvol
             end
         end
@@ -64,15 +64,15 @@ function transferoperator_exact_p(t::AbstractTriangulation)
 
     TO = SharedArray{Float64}(n_simplices, n_simplices)
 
-    @sync @parallel for i in 1:n_simplices
+    @sync @distributed for i in 1:n_simplices
         imvol = t.volumes_im[i]
         for j in 1:n_simplices
             vol = t.volumes[j]
             if vol * imvol > 0 && (vol/imvol) > ϵ
                 # Intersecting volume between these two simplices
                 TO[i, j] = simplexintersection(
-                                t.points[t.simplex_inds[j, :], :].',
-                                t.impoints[t.simplex_inds[i, :], :].'
+                                transpose(t.points[t.simplex_inds[j, :], :]),
+                                transpose(t.impoints[t.simplex_inds[i, :], :])
                             ) / imvol
             end
         end
@@ -80,3 +80,7 @@ function transferoperator_exact_p(t::AbstractTriangulation)
 
     return ExactSimplexTransferOperator(Array(TO))
 end
+
+
+transferoperator_triang_exact = transferoperator_exact
+export transferoperator_triang_exact

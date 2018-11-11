@@ -32,13 +32,13 @@ Base.show(io::IO, to::T) where {T<:AbstractTransferOperator} =
 # Abstract type for transfer operators estimated
 # from triangulations.
 ##################################################
-type TriangulationTransferOperator <: AbstractTransferOperator end
+struct TriangulationTransferOperator <: AbstractTransferOperator end
 
 ##################################################
 # Subtype for transfer operators estimated using
 # exact simplex volume intersections.
 ##################################################
-type ExactSimplexTransferOperator <: AbstractTransferOperator
+struct ExactSimplexTransferOperator <: AbstractTransferOperator
     transfermatrix::AbstractArray{Float64, 2}
 end
 
@@ -46,7 +46,7 @@ end
 # Subtype for transfer operators estimated using
 # approximate simplex volume intersections.
 ##################################################
-type ApproxSimplexTransferOperator <: AbstractTransferOperator
+struct ApproxSimplexTransferOperator <: AbstractTransferOperator
     transfermatrix::AbstractArray{Float64, 2}
 end
 
@@ -56,7 +56,7 @@ end
 # Subtype for transfer operators estimated from
 # a rectangular binning.
 ##################################################
-type RectangularBinningTransferOperator  <: AbstractTransferOperator
+struct RectangularBinningTransferOperator  <: AbstractTransferOperator
     transfermatrix::AbstractArray{Float64, 2}
 end
 
@@ -75,16 +75,30 @@ include("simplexestimators/pointapprox.jl")
 # Check if the obtained transfer matrices are
 # markov.
 ##################################################
+
+"""
+    is_markov(M::AbstractArray{T, 2}) -> Bool
+
+Is the matrix Markov? """
+function is_markov(M::AbstractArray{T, 2}) where T
+    all(sum(M, dims = 2) .≈ 1)
+end
+
 """
     is_markov(TO::AbstractTransferOperator) -> Bool
 
 Is the transfer operator Markov? """
 function is_markov(TO::AbstractTransferOperator)
-    all(sum(TO.transfermatrix, 2) .≈ 1)
+    is_markov(TO.transfermatrix)
 end
 
-function is_markov(M::AbstractArray{T, 2}) where T
-    all(sum(M, 2) .≈ 1)
+"""
+    is_almostmarkov(M::AbstractArray{T, 2}; tol = 0.01) -> Bool
+
+Is the matrix almost Markov?
+"""
+function is_almost_markov(M::AbstractArray{T, 2}; tol = 1e-3) where T
+    all(sum(M, dims = 2) .> (1 - tol))
 end
 
 """
@@ -93,27 +107,24 @@ end
 Is the transfer operator almost Markov?
 """
 function is_almost_markov(TO::AbstractTransferOperator; tol = 1e-3)
-    all(sum(TO.transfermatrix, 2) .> (1 - tol))
+    is_almost_markov(TO.transfermatrix)
 end
 
-function is_almost_markov(M::AbstractArray{T, 2}; tol = 1e-3) where T
-    all(sum(M, 2) .> (1 - tol))
-end
 
 function zerocols(M::AbstractArray{T, 2}) where T
-    find(sum(M, 1) .== 0)
+    findall(sum(M, dims = 1) .== 0)
 end
 
 function zerorows(M::AbstractArray{T, 2}) where T
-    find(sum(M, 2) .== 0)
+    findall(sum(M, dims = 2) .== 0)
 end
 
 function zerocols(TO::AbstractTransferOperator)
-    find(sum(TO.transfermatrix, 1) .== 0)
+    findall(sum(TO.transfermatrix, dims = 1) .== 0)
 end
 
 function zerorows(TO::AbstractTransferOperator)
-    find(sum(TO.transfermatrix, 2) .== 0)
+    findall(sum(TO.transfermatrix, dims = 2) .== 0)
 end
 
 export zerocols, zerorows

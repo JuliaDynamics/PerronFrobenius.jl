@@ -47,7 +47,7 @@ function left_eigenvector(to::AbstractTransferOperator;
     distance = norm(distribution - Ρ) / norm(Ρ)
 
     check = floor(Int, 1 / delta)
-    check_pts = floor.(Int, collect(1:N).' ./ check) .* collect(1:N).'
+    check_pts = floor.(Int, transpose(collect(1:N)) ./ check) .* transpose(collect(1:N))
     check_pts = check_pts[check_pts .> 0]
     num_checkpts = size(check_pts, 1)
     check_pts_counter = 1

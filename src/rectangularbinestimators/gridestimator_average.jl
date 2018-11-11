@@ -49,10 +49,10 @@ function coordinates_of_all_bin_origins(points, ϵ)
     origin_coordinates(axisminima, stepsizes, n_intervals_eachaxis)
 end
 
-coordinates_of_all_bin_origins(E::AbstractEmbedding, ϵ) =
+coordinates_of_all_bin_origins(E::Embeddings.AbstractEmbedding, ϵ) =
 	coordinates_of_all_bin_origins(E.points, ϵ)
 
-doc"""
+"""
     μ_of_targetbin_induced_by_binsize_ϵj(
             ϵF::Vector{Float64},
             bin_origin_ϵFₐ::Vector{Float64},
@@ -166,14 +166,14 @@ end
 
 
 """
-    μϵF_induced_by_ϵj(E::AbstractEmbedding,
+    μϵF_induced_by_ϵj(E::Embeddings.AbstractEmbedding,
                     ϵF::Vector{Float64},
                     ϵⱼ::Vector{Float64})
 
 Calculate the measure of the bins at bin size scale `ϵF` induced
 by the bin size scale `ϵⱼ`.
 """
-function μϵF_induced_by_ϵj(E::AbstractEmbedding, ϵF, ϵⱼ)
+function μϵF_induced_by_ϵj(E::Embeddings.AbstractEmbedding, ϵF, ϵⱼ)
     ϵF = minima_and_stepsizes(E.points, ϵF)[2]
     ϵⱼ = minima_and_stepsizes(E.points, ϵⱼ)[2]
 
@@ -193,7 +193,7 @@ function μϵF_induced_by_ϵj(E::AbstractEmbedding, ϵF, ϵⱼ)
 end
 
 """
-μϵF_induced_by_ϵj(E::AbstractEmbedding,
+μϵF_induced_by_ϵj(E::Embeddings.AbstractEmbedding,
                              ϵF::Vector{Float64},
                              ϵⱼs::Vector{Vector{Float64}})
 
@@ -201,7 +201,7 @@ Compute the invariant measure for the partition specified by
 `ϵF`. The measure is obtained by averaging the measure over
 partitions `ϵⱼs`.
 """
-function μϵF_induced_by_ϵjs(E::AbstractEmbedding, ϵF, ϵⱼs)#,
+function μϵF_induced_by_ϵjs(E::Embeddings.AbstractEmbedding, ϵF, ϵⱼs)#,
                              #visited_bin_inds_ϵF::Vector{Int})
     n_partitions = length(ϵⱼs)
 
