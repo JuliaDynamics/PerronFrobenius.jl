@@ -122,19 +122,23 @@ end
                         sample_randomly::Bool = false)
 
 Estimates the Perron Frobenius operator (Transfer operator) from a simplex-based
-partitioning of the state space. Calculates transition probabilities between
-volumes based on approximate intersections between the simplices.
+partitioning of the state space.
 
-This is done by approximating simplices as a distribution of minimum `n_pts`
-points contained inside each simplex. The actual number of points used may be
-slightly higher.  By default, points are distributed regularly inside simplices
-according to a shape-preserving simplex splitting.
+## Transition probabilities
+Calculates transition probabilities between volumes based on approximate
+intersections between the simplices. This is done by approximating simplices
+as a distribution of minimum `n_pts` points contained inside each simplex.
+The actual number of points used may be slightly higher.
 
 The default number of points (`n_pts = 200`) usually gives a maximum error
 in the entries of the transfer operator of < 10%.
 
-Points can also be distributed according to a uniform distribution by setting
+## Subsampling the simplices
+By default, points are distributed regularly inside simplices
+according to a shape-preserving simplex splitting. Points can also be
+distributed according to a uniform distribution by setting
 `sample_randomly = true`, but this decreases accuracy and is not recommended.
+
 """
 function transferoperator_approx(t::AbstractTriangulation;
                             n_pts::Int = 200,

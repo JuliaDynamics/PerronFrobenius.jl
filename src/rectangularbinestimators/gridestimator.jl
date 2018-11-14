@@ -6,18 +6,26 @@
         boundary_condition = :exclude) ->
         RectangularBinningTransferOperator
 
-Estimates the transfer operator for an embedding using the binning scheme
-specified by `ϵ`:
+Estimates the transfer operator for an embedding.
+
+## Discretization scheme
+
+The binning scheme is specified by `ϵ`, and the following `ϵ` are valid:
 
 - `ϵ::Int` divides each axis into `ϵ` intervals of the same size.
 - `ϵ::Float` divides each axis into intervals of size `ϵ`.
 - `ϵ::Vector{Int}` divides the i-th axis into `ϵᵢ` intervals of the same size.
 - `ϵ::Vector{Float64}` divides the i-th axis into intervals of size `ϵᵢ`.
 
+## Memory allocation
+
 `allocate_frac` controls what fraction of the total number of
-possible transitions (``n_states^2``) we pre-allocate for. Typically,
-we don't need more than 10 percent of the total number of possible
-transitions.
+possible transitions (``n_{states}^2``) we pre-allocate for. For short time
+series, you should leave this at the default value `1.0`. However, for longer
+time series, the transition matrix is sparse (usually, less than ``10\\%`` of
+the entries are nonzero). In these case, you can safely lower `allocate_frac`.
+
+## Boundary conditions (dealing with the last point)
 
 `boundary_condition` controls what to do with the forward
 map of the last point of the embedding. The default, `:exclude`,
@@ -53,31 +61,6 @@ function transferoperator_grid(
     transferoperator(binvisits, allocate_frac = allocate_frac, boundary_condition = boundary_condition)
 end
 
-"""
-    transferoperator_grid(points::AbstractArray{T, 2},
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
-        allocate_frac::Float64 = 1.0,
-        boundary_condition = :exclude) ->
-        RectangularBinningTransferOperator
-
-Estimates the transfer operator for a set of points (assumed to be
-provided as an array where each point is a column vector) with the
-binning scheme specified by `ϵ`:
-
-- `ϵ::Int` divides each axis into `ϵ` intervals of the same size.
-- `ϵ::Float` divides each axis into intervals of size `ϵ`.
-- `ϵ::Vector{Int}` divides the i-th axis into `ϵᵢ` intervals of the same size.
-- `ϵ::Vector{Float64}` divides the i-th axis into intervals of size `ϵᵢ`.
-
-`allocate_frac` controls what fraction of the total number of
-possible transitions (``n_states^2``) we pre-allocate for. Typically,
-we don't need more than 10 percent of the total number of possible
-transitions.
-
-`boundary_condition` controls what to do with the forward
-map of the last point of the embedding. The default, `:exclude`,
-simply ignores the last point.
-"""
 function transferoperator_grid(
         points::AbstractArray{T, 2},
         ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}};
