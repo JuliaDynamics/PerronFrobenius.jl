@@ -3,7 +3,7 @@ function origin_coordinates(axisminima, stepsizes, n_intervals_eachaxis)
     coords = zeros(Float64, D, prod(n_intervals_eachaxis))
 
     n_origins_generated = 0
-    for i in CartesianRange((n_intervals_eachaxis...))
+    for i in CartesianRange((n_intervals_eachaxis...,))
         n_origins_generated += 1
         coords[:, n_origins_generated] = axisminima + (stepsizes .* (i.I .- 1))
     end
@@ -216,7 +216,7 @@ function μϵF_induced_by_ϵjs(E::Embeddings.AbstractEmbedding, ϵF, ϵⱼs)#,
     # and a-th row give the measure indiced for the i-th
     # state of the target partition induced by the a-th
     # bin size ϵₐ.
-    μ = transpose(hcat(μ_across_binsizes...))
+    μ = transpose(hcat(μ_across_binsizes...,))
 
     # Compute the average measure for the final partition
     n_states_μF = size(μ, 2)
