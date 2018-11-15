@@ -140,7 +140,7 @@ export zerocols, zerorows
 
 Estimate the transfer operator from a triangulation.
 """
-function transferoperator(triang::AbstractTriangulation;
+function transferoperator_triang(triang::AbstractTriangulation;
                             exact = false, parallel = true,
                             n_pts = 200, sample_randomly = false)
     if exact

@@ -1,16 +1,21 @@
 """
-    transferoperator(bv::BinVisits; allocate_frac = 1.0)
+    transferoperator_binvisits(bv::BinVisits;
+                allocate_frac = 1,
+                boundary_condition = :none)
 
 Estimate transfer operator from information about which bin
 gets visited by which points of the orbit.
 
+## Transition probabilities
 To determine the transition probabilities, we pre-allocate two index vectors
 (`I` and `J`) and a probability vector (`P`). After the transition probabilities
 have been determined, the vectors are combined into a sparse matrix (the
 transfer matrix), which typically have very few nonzero entries (often only a
-few percent). To not allocate too much memory, `allocate_frac` controls what
-fraction of the total number of possible transitions (``n_states^2``) we
-pre-allocate.
+few percent).
+
+## Memory allocation
+To not allocate too much memory, `allocate_frac` controls what fraction of the
+total number of possible transitions (``n_{states}^2``) we pre-allocate for.
 
 ## Example usage
 
@@ -41,7 +46,9 @@ TO = transferoperator(binvisits)
 all(sum(TO, 2) .≈ 1)
 ```
 """
-function transferoperator(bv::BinVisits, allocate_frac::Float64 = 1, boundary_condition = :none)
+function transferoperator_binvisits(bv::BinVisits;
+                allocate_frac = 1.0,
+                boundary_condition = :none)
 
     valid_boundary_conditions = [:none, :exclude, :circular, :invariantize]
     if !(boundary_condition ∈ valid_boundary_conditions)
@@ -173,8 +180,3 @@ function transferoperator(bv::BinVisits, allocate_frac::Float64 = 1, boundary_co
 
     RectangularBinningTransferOperator(TO)
 end
-
- transferoperator(bv::BinVisits;
-    allocate_frac::Float64 = 1.0,
-    boundary_condition::Symbol = :none) =
-        transferoperator(bv, allocate_frac, boundary_condition)

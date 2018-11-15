@@ -21,7 +21,7 @@
                 @testset "2D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_2D, ϵ)
                     bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = transferoperator(bininfo)
+                    TO = transferoperator_binvisits(bininfo)
                     @test typeof(TO) <: RectangularBinningTransferOperator
 
                     # Last row might sum to zero, because the last point does not need to
@@ -43,7 +43,7 @@
                 @testset "3D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_3D, ϵ)
                     bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = transferoperator(bininfo)
+                    TO = transferoperator_binvisits(bininfo)
                     @test typeof(TO) <: RectangularBinningTransferOperator
 
                     # Last row might sum to zero, because the last point does not need to
@@ -65,7 +65,7 @@
                 @testset "4D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_4D, ϵ)
                     bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = transferoperator(bininfo)
+                    TO = transferoperator_binvisits(bininfo)
                     @test typeof(TO) <: RectangularBinningTransferOperator
 
                     # Last row might sum to zero, because the last point does not need to

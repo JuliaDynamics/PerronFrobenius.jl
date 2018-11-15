@@ -1,4 +1,4 @@
-
+tol = 1e-13
 @testset "Invariant measures" begin
 
     @testset "Grid estimator" begin
@@ -13,13 +13,13 @@
         bininfo_2D = organize_bin_labels(bins_visited_by_orbit_2D)
         bininfo_3D = organize_bin_labels(bins_visited_by_orbit_3D)
 
-        TO_2D = transferoperator(bininfo_2D)
-        TO_3D = transferoperator(bininfo_3D)
+        TO_2D = transferoperator_binvisits(bininfo_2D)
+        TO_3D = transferoperator_binvisits(bininfo_3D)
 
         invm_2D = left_eigenvector(TO_2D)
         invm_3D = left_eigenvector(TO_3D)
 
-        @test all(invm_2D.dist .>= 0)
+        @test all(invm_2D.dist .>= -tol)
         @test sum(invm_2D.dist) <= 1
     end
 
@@ -32,14 +32,14 @@
         triang_inv = triangulate(E_invariant)
 
         # Transfer operators from *invariant* triangulations
-        TO = transferoperator(triang_inv)
-        TO_approx = transferoperator(triang_inv, exact = false, parallel = false)
-        TO_approx_rand = transferoperator(triang_inv, exact = false, parallel = false, sample_randomly = true)
+        TO = transferoperator_triang(triang_inv)
+        TO_approx = transferoperator_triang(triang_inv, exact = false, parallel = false)
+        TO_approx_rand = transferoperator_triang(triang_inv, exact = false, parallel = false, sample_randomly = true)
         invm_approx = left_eigenvector(TO_approx)
         invm_approx_rand = left_eigenvector(TO_approx_rand)
 
-        @test all(invm_approx.dist .>= 0)
-        @test all(invm_approx_rand.dist .>= 0)
+        @test all(invm_approx.dist .>=  -tol)
+        @test all(invm_approx_rand.dist .>= -tol)
 
         @test sum(invm_approx.dist) ≈ 1
         @test sum(invm_approx_rand.dist) ≈ 1

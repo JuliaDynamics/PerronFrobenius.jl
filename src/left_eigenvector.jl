@@ -14,20 +14,28 @@ struct InvariantDistribution <: AbstractInvariantDistribution
 end
 
 """
+    left_eigenvector(to::AbstractTransferOperator;
+            N::Int = 200,
+            tolerance::Float64 = 1e-8,
+            delta::Float64 = 1e-8)
+
 Compute the invariant probability distribution from a
-[`TransferOperator`](@ref). The distribution is obtained by repeated
-application of the transfer operator on an randomly initialised distribution
-	left_eigenvector(TO::EquidistantBinningTransferOperator; N=100,
-		tolerance=1e-7, delta=1e-7)
+`TransferOperator`.
 
-until the distribution converges.
+## Computing an invariant probability distribution
+The distribution is taken as a left eigenvector of the transfer matrix,
+obtained by repeated application of the transfer operator on a randomly
+initialised distribution until the probability distribution converges.
 
-Optional arguments are `N` (maximum number of iterations), `tolerance` and
-`delta`, with the two latter deciding when convergence is achieved.
+## Keyword arguments
+- `N`: the maximum number of iterations.
+- `tolerance` and `delta: decides when convergence is achieved.
 
 """
 function left_eigenvector(to::AbstractTransferOperator;
-			N::Int = 200, tolerance::Float64 = 1e-8, delta::Float64 = 1e-8)
+			N::Int = 200,
+            tolerance::Float64 = 1e-8,
+            delta::Float64 = 1e-8)
     #=
     # Start with a random distribution `Ρ` (big rho). Normalise it so that it
     # sums to 1 and forms a true probability distribution over the simplices.

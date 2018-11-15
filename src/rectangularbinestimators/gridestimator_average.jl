@@ -146,7 +146,7 @@ size scale. Then the arguments are:
 - `μϵⱼ`: the measures of the visited bins in ``Pϵⱼ``.
 """
 function μ_of_targetbins_induced_by_binsize_ϵj(
-            E,
+            E::Embeddings.AbstractEmbedding,
             ϵF,
             bin_origins_ϵF::Array{Float64, 2},
             ϵⱼ,

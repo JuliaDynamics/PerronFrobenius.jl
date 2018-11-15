@@ -10,9 +10,9 @@
     triang_inv = triangulate(E_invariant)
 
     # Transfer operators from *invariant* triangulations
-    TO = transferoperator(triang_inv)
-    TO_approx = transferoperator(triang_inv, exact = false, parallel = false)
-    TO_approx_rand = transferoperator(triang_inv, exact = false, parallel = false, sample_randomly = true)
+    TO = transferoperator_triang(triang_inv)
+    TO_approx = transferoperator_triang(triang_inv, exact = false, parallel = false)
+    TO_approx_rand = transferoperator_triang(triang_inv, exact = false, parallel = false, sample_randomly = true)
     #TO_exact = transferoperator(triang_inv, exact = true, parallel = false)
     #TO_exact_p = transferoperator(triang_inv, exact = true, parallel = true)
 
@@ -40,9 +40,9 @@
     #@test is_markov(TO_exact_p)
 
     # Transfer operators from regular triangulations *not guaranteed to be invariant*
-    TO = transferoperator(triang)
-    TO_approx = transferoperator(triang, exact = false, parallel = false)
-    TO_approx_rand = transferoperator(triang, exact = false,
+    TO = transferoperator_triang(triang)
+    TO_approx = transferoperator_triang(triang, exact = false, parallel = false)
+    TO_approx_rand = transferoperator_triang(triang, exact = false,
 					parallel = false, sample_randomly = true)
     #TO_exact = transferoperator(triang, exact = true, parallel = false)
     #TO_exact_p = transferoperator(triang, exact = true, parallel = true)

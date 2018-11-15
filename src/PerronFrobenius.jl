@@ -50,10 +50,11 @@ export
 	organize_bin_labels, BinVisits,
 
     # Transfer operator estimators
-    transferoperator,
+    transferoperator_binvisits,
     transferoperator_grid,
+    transferoperator_triang,
+    transferoperator_approx,
     transferoperator_exact,
-    transferoperator_exact_p,
-    transferoperator_approx
+    transferoperator_exact_p
 
 end
