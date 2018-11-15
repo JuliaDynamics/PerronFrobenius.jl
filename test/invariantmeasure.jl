@@ -20,7 +20,7 @@ tol = 1e-13
         invm_3D = left_eigenvector(TO_3D)
 
         @test all(invm_2D.dist .>= -tol)
-        @test sum(invm_2D.dist) <= 1
+        @test sum(invm_2D.dist) <= 1 + tol || sum(invm_2D.dist) ≈ 1
     end
 
     @testset "Triangulation approximate estimator" begin
