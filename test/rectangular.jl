@@ -28,12 +28,12 @@
                     # be contained in the last bin. However, the remaining row sums must
                     # be one.
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_binvisits_2D.jld2" TO, E_2D, bininfo
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -50,12 +50,12 @@
             		# be contained in the last bin. However, the remaining row sums must
             		# be one.
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_binvisits_3D.jld2" TO, E_3D, bininfo
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -72,12 +72,12 @@
             		# be contained in the last bin. However, the remaining row sums must
             		# be one.
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_binvisits_4D.jld2" TO, E_4D, bininfo
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -91,12 +91,12 @@
                     TO = transferoperator_grid(E_2D, ϵ)
                     @test typeof(TO) <: RectangularBinningTransferOperator
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_embedding_2D.jld2" TO, E_2D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -107,12 +107,12 @@
                     TO = transferoperator_grid(E_3D, ϵ)
                     @test typeof(TO) <: RectangularBinningTransferOperator
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_embedding_3D.jld2" TO, E_3D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -123,12 +123,12 @@
                     TO = transferoperator_grid(E_4D, ϵ)
                     @test typeof(TO) <: RectangularBinningTransferOperator
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_embedding_4D.jld2" TO, E_4D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -143,12 +143,12 @@
                     @test typeof(TO) <: RectangularBinningTransferOperator
 
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_points_2D.jld2" TO, points_2D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -161,12 +161,12 @@
                     @test typeof(TO) <: RectangularBinningTransferOperator
 
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_points_3D.jld2" TO, points_3D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
@@ -177,12 +177,12 @@
                     TO = transferoperator_grid(points_4D, ϵ)
                     @test typeof(TO) <: RectangularBinningTransferOperator
                     if !is_markov(TO)
-                        warn("There were all-zero columns in the transfer matrix")
-                        warn("Removing first column and last row")
+                        @warn "There were all-zero columns in the transfer matrix"
+                        @warn "Removing first column and last row"
                         if is_markov(TO.transfermatrix[1:(end-1), 2:end])
                             info("That made the transfer matrix Markov")
                         else
-                            warn("That did NOT make the transfer matrix Markov")
+                            @warn "That did NOT make the transfer matrix Markov"
                             #@save "from_points_4D.jld2" TO, points_4D
                         end
                         @test is_markov(TO.transfermatrix[1:(end-1), 2:end])
