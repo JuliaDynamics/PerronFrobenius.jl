@@ -44,4 +44,14 @@ tol = 1e-13
         @test sum(invm_approx.dist) ≈ 1
         @test sum(invm_approx_rand.dist) ≈ 1
     end
+
+    @testset "RectangularInvariantMeasure" begin
+        E = embed([diff(rand(100)) for i = 1:5])
+        ϵ = 3
+        @test typeof(RectangularInvariantMeasure(E, 3)) <: InvariantMeasure
+        @test typeof(RectangularInvariantMeasure(E, 0.4)) <: InvariantMeasure
+        @test typeof(RectangularInvariantMeasure(E, [3, 2, 2, 3, 2])) <: InvariantMeasure
+        @test typeof(RectangularInvariantMeasure(E, [0.6, 0.5, 0.6, 0.5, 0.6])) <: InvariantMeasure
+
+	end
 end

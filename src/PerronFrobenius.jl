@@ -30,7 +30,7 @@ using Simplices:
 abstract type TransferOperatorEstimator end
 
 include("TransferOperator.jl")
-include("left_eigenvector.jl")
+include("invariantmeasure/InvariantMeasure.jl")
 
 
 export
@@ -44,7 +44,7 @@ export
     # Methods on transfer operator types
     is_markov,
     is_almost_markov,
-    InvariantDistribution, left_eigenvector,
+    InvariantDistribution, left_eigenvector, invariantmeasure,
 
 	# Stuff needed for the estimators
 	organize_bin_labels, BinVisits,

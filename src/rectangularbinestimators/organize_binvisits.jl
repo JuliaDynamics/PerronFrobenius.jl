@@ -1,31 +1,4 @@
 """
-    whichpoints_visit_whichbins(A, U) -> Vector{Int}
-
-Given a sequence of unique elements from an array `U`, say
-U = [a b c e], which are taken from the array `A`, say
-A = [a b c a c b b a c e], we express the elements of the full
-vector as their corresponding integer position in the array of
-unique elements. The corresponding position vector will be
-P = [1 2 3 1 3 2 2 1 3 4].
-
-"""
-function whichpoints_visit_whichbins(A, U)
-    a = [A[:,i] for i in 1:size(A, 2)]
-    u = [U[:,i] for i in 1:size(U, 2)]
-    inds = Int[]
-    npts = length(a)
-    npts_unique = length(u)
-    for j = 1:npts
-        for i = 1:npts_unique
-            if a[j] == u[i]
-                push!(inds, i)
-            end
-        end
-    end
-    inds
-end
-
-"""
     BinVisits
 
 A data structure helping to organize information about bins that
@@ -54,6 +27,43 @@ struct BinVisits
     first_visited_by::Vector{Int}
     visitors::Vector{Vector{Int}}
     visits_whichbin::Vector{Int}
+end
+
+
+####################
+# Pretty printing
+####################
+function summarise(bv::PerronFrobenius.BinVisits)
+    n_pts = length(bv.first_visited_by)
+
+end
+Base.show(io::IO, bv::PerronFrobenius.BinVisits) = println(io, summarise(bv))
+
+"""
+    whichpoints_visit_whichbins(A, U) -> Vector{Int}
+
+Given a sequence of unique elements from an array `U`, say
+U = [a b c e], which are taken from the array `A`, say
+A = [a b c a c b b a c e], we express the elements of the full
+vector as their corresponding integer position in the array of
+unique elements. The corresponding position vector will be
+P = [1 2 3 1 3 2 2 1 3 4].
+
+"""
+function whichpoints_visit_whichbins(A, U)
+    a = [A[:,i] for i in 1:size(A, 2)]
+    u = [U[:,i] for i in 1:size(U, 2)]
+    inds = Int[]
+    npts = length(a)
+    npts_unique = length(u)
+    for j = 1:npts
+        for i = 1:npts_unique
+            if a[j] == u[i]
+                push!(inds, i)
+            end
+        end
+    end
+    inds
 end
 
 """
