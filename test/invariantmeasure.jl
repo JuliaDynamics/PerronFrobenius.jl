@@ -48,10 +48,18 @@ tol = 1e-13
     @testset "RectangularInvariantMeasure" begin
         E = embed([diff(rand(100)) for i = 1:5])
         ϵ = 3
+        # On raw points
+        @test typeof(RectangularInvariantMeasure(E.points, 3)) <: InvariantMeasure
+        @test typeof(RectangularInvariantMeasure(E.points, 0.4)) <: InvariantMeasure
+        @test typeof(RectangularInvariantMeasure(E.points, [3, 2, 2, 3, 2])) <: InvariantMeasure
+        @test typeof(RectangularInvariantMeasure(E.points, [0.6, 0.5, 0.6, 0.5, 0.6])) <: InvariantMeasure
+
+        # On embeddings
         @test typeof(RectangularInvariantMeasure(E, 3)) <: InvariantMeasure
         @test typeof(RectangularInvariantMeasure(E, 0.4)) <: InvariantMeasure
         @test typeof(RectangularInvariantMeasure(E, [3, 2, 2, 3, 2])) <: InvariantMeasure
         @test typeof(RectangularInvariantMeasure(E, [0.6, 0.5, 0.6, 0.5, 0.6])) <: InvariantMeasure
+        @show RectangularInvariantMeasure(E.points, 3)
 
 	end
 end

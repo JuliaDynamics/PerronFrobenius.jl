@@ -9,19 +9,12 @@ function summarise(iv::AbstractInvariantDistribution)
     invdist_str = "$invdist_type where $n_nonzero out of $n_bins bins have positive measure\n"
     return invdist_str
 end
-Base.show(io::IO, iv::AbstractInvariantDistribution) = println(io, summarise(iv))
 
-
-####################
-# Pretty printing
-####################
 function summarise(invm::RectangularInvariantMeasure)
-    # Embedding
-    embedding_type = typeof(invm.E)
-    D = size(invm.E.points, 1)
-    npts = size(invm.E.points, 2)
+    D = size(invm.pts, 1)
+    npts = size(invm.pts, 2)
 
-    E_str = "  embedding: $embedding_type with $npts points\n"
+    pts_str = "  pts: $npts $D-dimensional points\n"
 
     # Discretization
     ϵ = invm.ϵ
@@ -39,9 +32,10 @@ function summarise(invm::RectangularInvariantMeasure)
     TO = invm.transfermatrix
     iv = invm.measure
     transfermatrix_str = "  transfermatrix: $TO"
-    measure_str = "  measure: $iv\n"
-    return join(["RectangularInvariantMeasure\n", E_str, ϵ_str, inds_str, coords_str,
+    measure_str = "  measure: $iv"
+    return join(["RectangularInvariantMeasure\n", pts_str, ϵ_str, inds_str, coords_str,
                 binvisits_str, transfermatrix_str, measure_str])
 end
 
+Base.show(io::IO, iv::AbstractInvariantDistribution) = println(io, summarise(iv))
 Base.show(io::IO, invm::RectangularInvariantMeasure) = println(io, summarise(invm))
