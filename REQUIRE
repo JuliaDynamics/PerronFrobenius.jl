@@ -9,3 +9,4 @@ Reexport
 Simplices 0.2.1
 StateSpaceReconstruction 0.3.0 0.3.2
 StaticArrays
+DelayEmbeddings
