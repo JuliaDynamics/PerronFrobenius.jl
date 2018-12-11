@@ -15,7 +15,6 @@ using SparseArrays
 using InplaceOps
 using RecipesBase
 using Printf
-using Documenter
 using LinearAlgebra
 
 import Parameters:
