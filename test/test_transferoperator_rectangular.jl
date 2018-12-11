@@ -1,14 +1,14 @@
 
-@testset "Transfer operator from rectangular binning" begin
+@testset "Transfer operator from rectangular binnings" begin
     @testset "Grid approach" begin
         @testset "Independent realization $i" for i=1:3
             points_2D = rand(2, 200)
             points_3D = rand(3, 400)
             points_4D = rand(4, 500)
 
-            E_2D = invariantize(embed(points_2D))
-            E_3D = invariantize(embed(points_3D))
-            E_4D = invariantize(embed(points_4D))
+            E_2D = invariantize(StateSpaceReconstruction.embed(points_2D))
+            E_3D = invariantize(StateSpaceReconstruction.embed(points_3D))
+            E_4D = invariantize(StateSpaceReconstruction.embed(points_4D))
 
             points_2D = E_2D.points
             points_3D = E_3D.points
