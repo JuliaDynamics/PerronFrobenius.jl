@@ -13,4 +13,9 @@ struct InvariantDistribution <: AbstractInvariantDistribution
     nonzero_inds::Vector{Int} # indices of nonzero entries
 end
 
-export AbstractInvariantDistribution, InvariantDistribution
+get_distribution(i::InvariantDistribution) = i.dist
+
+export
+AbstractInvariantDistribution,
+InvariantDistribution,
+getdistribution
