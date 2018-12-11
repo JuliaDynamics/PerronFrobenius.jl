@@ -16,23 +16,24 @@ using InplaceOps
 using RecipesBase
 using Printf
 using LinearAlgebra
+using DelayEmbeddings
 
 import Parameters:
             @with_kw,
             @unpack
 
-using Simplices:
-            subsample_coeffs,
-            simplexintersection
+using Simplices: subsample_coeffs
+using Simplices: simplexintersection
 
 # Abstract estimator type
 abstract type TransferOperatorEstimator end
 
-include("TransferOperator.jl")
-include("invariantmeasure/InvariantMeasure.jl")
+include("TransferOperator/TransferOperator.jl")
+include("InvariantMeasure/InvariantMeasure.jl")
 
+include("is_markov.jl")
 
-export
+end
     # Transfer operator types
     AbstractTransferOperator,
 	AbstractTriangulationTransferOperator,
