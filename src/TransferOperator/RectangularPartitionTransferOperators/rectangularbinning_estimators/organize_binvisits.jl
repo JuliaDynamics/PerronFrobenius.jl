@@ -33,11 +33,11 @@ end
 ####################
 # Pretty printing
 ####################
-function summarise(bv::PerronFrobenius.BinVisits)
+function summarise(bv::BinVisits)
     n_pts = length(bv.first_visited_by)
 
 end
-Base.show(io::IO, bv::PerronFrobenius.BinVisits) = println(io, summarise(bv))
+Base.show(io::IO, bv::BinVisits) = println(io, summarise(bv))
 
 """
     whichpoints_visit_whichbins(A, U) -> Vector{Int}
@@ -85,3 +85,7 @@ function organize_bin_labels(visited_bin_labels::Array{Int, 2})
 
     BinVisits(first_visited_by, visitors, visits_whichbin)
 end
+
+export
+BinVisits,
+organize_bin_labels

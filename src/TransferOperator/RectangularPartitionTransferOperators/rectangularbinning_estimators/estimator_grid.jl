@@ -1,3 +1,5 @@
+import StateSpaceReconstruction.Embeddings
+
 """
     transferoperator_binvisits(bv::BinVisits;
                 allocate_frac = 1.0,
@@ -302,6 +304,6 @@ function transferoperator_grid(
                         boundary_condition = boundary_condition)
 end
 
-export transferoperator_binvisits, transferoperator_grid
-
-include("gridestimator_average.jl")
+export
+transferoperator_binvisits,
+transferoperator_grid

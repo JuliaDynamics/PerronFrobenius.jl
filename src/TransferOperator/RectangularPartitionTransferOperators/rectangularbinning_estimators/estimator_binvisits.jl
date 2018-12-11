@@ -1,3 +1,5 @@
+include("organize_binvisits.jl")
+
 """
     transferoperator_binvisits(bv::BinVisits;
                 allocate_frac = 1,
