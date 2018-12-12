@@ -354,9 +354,9 @@ version = "0.7.2"
 
 [[StateSpaceReconstruction]]
 deps = ["Conda", "Distances", "Distributions", "DynamicalSystemsBase", "LinearAlgebra", "NearestNeighbors", "PyCall", "Reexport", "Simplices", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "fe68aee28285c4dd16791384be7b20915e9a0f54"
+git-tree-sha1 = "9ce78c9774bbedbf3913acaa27cb3f207379754a"
 uuid = "1441a9f6-6a74-5418-a591-cdf1d78a07f0"
-version = "0.3.2"
+version = "0.3.3"
 
 [[StaticArrays]]
 deps = ["InteractiveUtils", "LinearAlgebra", "Random", "Statistics", "Test"]
