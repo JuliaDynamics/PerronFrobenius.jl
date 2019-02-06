@@ -7,11 +7,11 @@ pts = rand(3, 10000)
 # nonzero, because the random starting distribution is *random* every
 # time, and will yield slightly different measures every time.
 
-μ_induced1a = PerronFrobenius.μϵF_induced_by_ϵj(pts, μF , μF)
-μ_induced1b = PerronFrobenius.induced_measure(pts, μF , μF)
+μ_induced1a = μϵF_induced_by_ϵj(pts, μF , μF)
+μ_induced1b = induced_measure(pts, μF , μF)
 
-μ_induced2a = PerronFrobenius.μϵF_induced_by_ϵj(pts, μF , [2, 6, 4])
-μ_induced2b = PerronFrobenius.induced_measure(pts, μF , [2, 6, 4])
+μ_induced2a = μϵF_induced_by_ϵj(pts, μF , [2, 6, 4])
+μ_induced2b = induced_measure(pts, μF , [2, 6, 4])
 
 @testset "Induced measure" begin
 	@testset "Induced measures sum to 1" begin
@@ -33,9 +33,9 @@ pts = rand(3, 10000)
 	@testset "Comparing regular to induced measure" begin
 		# Measure computed regularly, either manually or using the
 		# constructor that also stored info.
-		TO_orig1 = PerronFrobenius.transferoperator_grid(pts, μF)
-		μ_orig1 = PerronFrobenius.invariantmeasure(TO_orig1);
-		μ_orig2 = PerronFrobenius.RectangularInvariantMeasure(pts, μF).measure;
+		TO_orig1 = transferoperator(pts, RectangularBinning(μF))
+		μ_orig1 = invariantmeasure(TO_orig1);
+		μ_orig2 = rectangularinvariantmeasure(pts, μF).measure;
 
 
 		@testset "The same" begin

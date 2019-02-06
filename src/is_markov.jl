@@ -20,10 +20,6 @@ function is_markov(TO::AbstractTransferOperator)
     is_markov(TO.transfermatrix)
 end
 
-function is_markov(TO::RectangularBinningTransferOperator)
-    is_markov(TO.transfermatrix)
-end
-
 """
     is_almostmarkov(M::AbstractArray{T, 2}; tol = 0.01) -> Bool
 

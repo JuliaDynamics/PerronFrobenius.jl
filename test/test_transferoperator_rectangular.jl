@@ -1,3 +1,5 @@
+import StateSpaceReconstruction
+import PerronFrobenius
 
 @testset "Transfer operator from rectangular binnings" begin
     @testset "Grid approach" begin
@@ -6,9 +8,9 @@
             points_3D = rand(3, 400)
             points_4D = rand(4, 500)
 
-            E_2D = invariantize(StateSpaceReconstruction.embed(points_2D))
-            E_3D = invariantize(StateSpaceReconstruction.embed(points_3D))
-            E_4D = invariantize(StateSpaceReconstruction.embed(points_4D))
+            E_2D = invariantize(customembed(points_2D))
+            E_3D = invariantize(customembed(points_3D))
+            E_4D = invariantize(customembed(points_4D))
 
             points_2D = E_2D.points
             points_3D = E_3D.points
@@ -21,8 +23,8 @@
                 @testset "2D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_2D, ϵ)
                     bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = transferoperator_binvisits(bininfo)
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    TO = TransferOperatorEstimatorRectangularBinVisits(bininfo)
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     # Last row might sum to zero, because the last point does not need to
                     # be contained in the last bin. However, the remaining row sums must
@@ -43,8 +45,8 @@
                 @testset "3D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_3D, ϵ)
                     bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = transferoperator_binvisits(bininfo)
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    TO = TransferOperatorEstimatorRectangularBinVisits(bininfo)
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     # Last row might sum to zero, because the last point does not need to
             		# be contained in the last bin. However, the remaining row sums must
@@ -65,8 +67,8 @@
                 @testset "4D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_4D, ϵ)
                     bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = transferoperator_binvisits(bininfo)
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    TO = TransferOperatorEstimatorRectangularBinVisits(bininfo)
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     # Last row might sum to zero, because the last point does not need to
             		# be contained in the last bin. However, the remaining row sums must
@@ -88,8 +90,8 @@
 
             @testset "From embedding" begin
                 @testset "2D" begin
-                    TO = transferoperator_grid(E_2D, ϵ)
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    TO = TransferOperatorEstimatorRectangularBinning(E_2D, ϵ)
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
                     if !is_markov(TO)
                         @warn "There were all-zero columns in the transfer matrix"
                         @warn "Removing first column and last row"
@@ -104,8 +106,8 @@
                 end
 
                 @testset "3D" begin
-                    TO = transferoperator_grid(E_3D, ϵ)
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    TO = TransferOperatorEstimatorRectangularBinning(E_3D, ϵ)
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
                     if !is_markov(TO)
                         @warn "There were all-zero columns in the transfer matrix"
                         @warn "Removing first column and last row"
@@ -120,8 +122,8 @@
                 end
 
                 @testset "4D" begin
-                    TO = transferoperator_grid(E_4D, ϵ)
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    TO = TransferOperatorEstimatorRectangularBinning(E_4D, ϵ)
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
                     if !is_markov(TO)
                         @warn "There were all-zero columns in the transfer matrix"
                         @warn "Removing first column and last row"
@@ -138,9 +140,9 @@
 
             @testset "From points" begin
                 @testset "2D" begin
-                    TO = transferoperator_grid(points_2D, ϵ)
+                    TO = TransferOperatorEstimatorRectangularBinning(points_2D, ϵ)
 
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     if !is_markov(TO)
                         @warn "There were all-zero columns in the transfer matrix"
@@ -156,9 +158,9 @@
                 end
 
                 @testset "3D" begin
-                    TO = transferoperator_grid(points_3D, ϵ)
+                    TO = TransferOperatorEstimatorRectangularBinning(points_3D, ϵ)
 
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     if !is_markov(TO)
                         @warn "There were all-zero columns in the transfer matrix"
@@ -174,8 +176,8 @@
                 end
 
                 @testset "4D" begin
-                    TO = transferoperator_grid(points_4D, ϵ)
-                    @test typeof(TO) <: RectangularBinningTransferOperator
+                    TO = TransferOperatorEstimatorRectangularBinning(points_4D, ϵ)
+                    @test typeof(TO) <: TransferOperatorRectangularBinning
                     if !is_markov(TO)
                         @warn "There were all-zero columns in the transfer matrix"
                         @warn "Removing first column and last row"
