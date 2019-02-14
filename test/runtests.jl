@@ -3,9 +3,22 @@ if lowercase(get(ENV, "CI", "false")) == "true"
 end
 
 using Test
+using CausalityToolsBase
 using StateSpaceReconstruction
 using PerronFrobenius
 
-include("rectangular.jl")
-include("invariantmeasure.jl")
-include("triangulations.jl")
+
+# Individual constructors (i.e. rectangularinvariantmeasure(pts, ϵ))
+include("test_rectangularmeasure_constructor.jl")
+include("test_inducedmeasure.jl")
+include("test_inducedmeasure_constructor.jl")
+include("test_averagemeasure.jl")
+include("test_averagemeasure_constructor.jl")
+
+# Test the estimators (i.e. invariantmeasure(pts, binningscheme))
+include("test_invariantmeasure_estimators.jl")
+
+include("test_gridestimator.jl")
+include("test_transferoperator_rectangular.jl")
+
+#include("triangulations.jl")

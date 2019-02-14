@@ -2,7 +2,7 @@
 
 @testset "Transfer operator from triangulations" begin
     # Embeddings
-    E = embed([diff(rand(15)) for i = 1:3])
+    E = StateSpaceReconstruction.cembed([diff(rand(15)) for i = 1:3])
     E_invariant = invariantize(E)
 
     # Triangulations

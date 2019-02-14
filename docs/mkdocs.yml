@@ -1,0 +1,30 @@
+site_name:        PerronFrobenius.jl
+repo_url:         https://github.com/kahaaga/PerronFrobenius.jl
+site_description: State space reconstruction/embedding and partitioning tools.
+site_author:      kahaaga
+
+theme:
+  name: 'material'
+
+extra_css:
+  - assets/documenter.css
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML
+  - assets/mathjaxhelper.js
+  - assets/documenter.js
+  - assets/search.js
+
+markdown_extensions:
+  - extra
+  - tables
+  - fenced_code
+  - mdx_math
+
+docs_dir: 'build'
+
+pages:
+  - Overview: index.md
+  - Estimators:
+    - Overview: estimators/estimators.md
+    - Grid approach: estimators/direct.md
