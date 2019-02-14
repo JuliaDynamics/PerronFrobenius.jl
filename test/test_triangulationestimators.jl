@@ -14,7 +14,7 @@ import StateSpaceReconstruction
 	@test TOe isa TransferOperatorTriangulationExact
 
     # @testset "Triangulation approximate estimator" begin
-    #     E = StateSpaceReconstruction.customembed([diff(rand(15)) for i = 1:3])
+    #     E = StateSpaceReconstruction.cembed([diff(rand(15)) for i = 1:3])
     #     E_invariant = invariantize(E)
     #
     #     # Triangulations

@@ -8,9 +8,9 @@ import PerronFrobenius
             points_3D = rand(3, 400)
             points_4D = rand(4, 500)
 
-            E_2D = invariantize(customembed(points_2D))
-            E_3D = invariantize(customembed(points_3D))
-            E_4D = invariantize(customembed(points_4D))
+            E_2D = invariantize(cembed(points_2D))
+            E_3D = invariantize(cembed(points_3D))
+            E_4D = invariantize(cembed(points_4D))
 
             points_2D = E_2D.points
             points_3D = E_3D.points

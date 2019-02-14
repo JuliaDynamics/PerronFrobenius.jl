@@ -3,8 +3,8 @@ tol = 1e-10
 @testset "Grid estimator" begin
     points_2D = rand(2, 200)
     points_3D = rand(3, 400)
-    E_2D = invariantize(StateSpaceReconstruction.customembed(points_2D))
-    E_3D = invariantize(StateSpaceReconstruction.customembed(points_3D))
+    E_2D = invariantize(StateSpaceReconstruction.cembed(points_2D))
+    E_3D = invariantize(StateSpaceReconstruction.cembed(points_3D))
     ϵ = 3
     bins_visited_by_orbit_2D = assign_bin_labels(E_2D, ϵ)
     bins_visited_by_orbit_3D = assign_bin_labels(E_3D, ϵ)

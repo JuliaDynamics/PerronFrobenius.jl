@@ -18,9 +18,44 @@ end
 
 
 ######################################
-# Providing customized binning schemes
+# Triangulation binnign schemes
 ######################################
 
+"""
+    invariantmeasure(pts, ϵ::TriangulationBinning, 
+        simplex_intersection_type::ExactIntersection) -> TriangulationExactInvariantMeasure
+
+Estimate the invariant measure over the state space defined by `pts` using a triangulation 
+of the phase space as the partition, using exact simplex intersections to compute transition
+probabilities between the states (simplices).
+
+Example: If `pts = [rand(3) for i = 1:30`], then run
+`invariantmeasure(pts, TriangulationBinning(), ExactIntersection())`. 
+"""
+function invariantmeasure(pts, ϵ::TriangulationBinning, simplex_intersection_type::ExactIntersection)
+    triangulationexactinvariantmeasure(pts)
+end
+
+
+"""
+    invariantmeasure(pts, ϵ::TriangulationBinning, 
+        simplex_intersection_type::ExactIntersection) -> TriangulationApproxInvariantMeasure
+
+Estimate the invariant measure over the state space defined by `pts` using a triangulation 
+of the phase space as the partition, using exact simplex intersections to compute transition
+probabilities between the states (simplices).
+
+Example: If `pts = [rand(3) for i = 1:30`], then run
+`invariantmeasure(pts, TriangulationBinning(), ApproximateIntersection())`. 
+"""
+function invariantmeasure(pts, ϵ::TriangulationBinning, simplex_intersection_type::ApproximateIntersection;
+    n::Int = 100, sample_randomly::Bool = false)
+    triangulationapproxinvariantmeasure(pts, n_sample_pts = n, sample_randomly = sample_randomly)
+end
+
+######################################
+# Providing customized binning schemes
+######################################
 # Regular rectnagular invariant measure
 function invariantmeasure(data, binning_scheme::RectangularBinning; kwargs...)
     rectangularinvariantmeasure(

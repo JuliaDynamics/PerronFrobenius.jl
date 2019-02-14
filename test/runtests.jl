@@ -3,6 +3,7 @@ if lowercase(get(ENV, "CI", "false")) == "true"
 end
 
 using Test
+using CausalityToolsBase
 using StateSpaceReconstruction
 using PerronFrobenius
 

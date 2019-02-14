@@ -1,3 +1,8 @@
+import CausalityToolsBase: 
+    TriangulationBinningScheme,
+    TriangulationBinning,
+    SimplexIntersectionType, 
+    ExactIntersection
 
 import StateSpaceReconstruction:
     invariantize,
@@ -30,13 +35,13 @@ struct TriangulationExactInvariantMeasure{PT, TT, TOT} <: AbstractTriangulationI
 end 
 
 
-function TriangulationExactInvariantMeasure(points::PT; kwargs...) where {PT}
+function triangulationexactinvariantmeasure(points::PT; kwargs...) where {PT}
     inv_points = invariantize(points)
     triang = triangulate(inv_points[1:(end - 1)])
     TO = transferoperator_triangulation_exact(points, triang.simplexindices)
     measure = invariantmeasure(TO, kwargs...)
     
-    TriangulationInvariantMeasureExact(
+    TriangulationExactInvariantMeasure(
         points, 
         inv_points, 
         triang, 
@@ -44,5 +49,25 @@ function TriangulationExactInvariantMeasure(points::PT; kwargs...) where {PT}
         measure)
 end
 
+function description(μ::TriangulationExactInvariantMeasure)
+    T_pts = typeof(μ.points)
+    T_invpts = typeof(μ.invariantized_points)
+    triang = μ.triangulation
+    to = μ.transferoperator 
+    measure = μ.measure
+    
+    npts = 
 
-export TriangulationExactInvariantMeasure
+    invmeasure_type = typeof(μ)
+    return join(["TriangulationExactInvariantMeasure", "\n",
+                "  μ.points:\t\t", T_pts,   "\n", 
+                 "  μ.invariantized_points:\t", T_invpts, "\n",
+                 "  μ.triangulation:\t", triang,
+                "  μ.transferoperator:\t", to, 
+                "  μ.measure:\t\t", measure])
+end
+
+Base.show(io::IO, μ::TriangulationExactInvariantMeasure) = println(io, description(μ))
+
+
+export TriangulationExactInvariantMeasure, triangulationexactinvariantmeasure

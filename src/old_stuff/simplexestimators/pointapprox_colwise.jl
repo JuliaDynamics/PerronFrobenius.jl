@@ -122,7 +122,7 @@ function get_simplices_at_inds!(simps, inds::Vector{Int}, simplices)
 end
 
 """
-    transferoperator(t::Triangulation;
+    transferoperator_approx(t::Triangulation;
                         n_pts::Int = 200,
                         sample_randomly::Bool = false)
 

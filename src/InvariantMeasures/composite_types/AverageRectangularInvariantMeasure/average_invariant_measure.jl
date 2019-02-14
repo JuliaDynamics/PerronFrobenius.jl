@@ -1,5 +1,3 @@
-include("../InducedRectangularInvariantMeasure/InducedRectangularInvariantMeasure.jl")
-
 """
     μϵF_induced_by_ϵjs(pts, ϵF, ϵjs)
 

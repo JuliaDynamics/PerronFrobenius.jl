@@ -20,6 +20,50 @@ over the partition elements.
 """ 
 function transferoperator(points, binning_scheme::RectangularBinningScheme; kwargs...) end
 
+######################## 
+# Triangulation binnings
+######################## 
+"""
+    transferoperator(pts, ϵ::TriangulationBinning, simplex_intersection_type::ApproximateIntersection; 
+        n::Int = 200, sample_randomly::Bool = false) -> TransferOperatorTriangulationApprox
+
+Estimate the invariant measure over the state space defined by `pts` using a triangulation 
+of the phase space as the partition, using approximate simplex intersections to compute transition
+probabilities between the states (simplices). 
+
+`n` is the number of points that each simplex is 
+sampled with, and `sample_randomly` indicates whether points used be sampled randomly 
+within each simpled (`sample_randomly = true`) or by a regular simplex splitting routine 
+(`sample_randomly = false`, which is default).
+
+Example: If `pts = [rand(3) for i = 1:30`], then run
+`transferoperator(pts, TriangulationBinning(), ApproximateIntersection())`. 
+"""
+function transferoperator(pts, ϵ::TriangulationBinning, 
+        simplex_intersection_type::ApproximateIntersection; 
+        n::Int = 200, sample_randomly::Bool = false)
+    
+    transferoperator_triangulation_approx(pts, 
+        n_sample_pts = n, 
+        sample_randomly = sample_randomly)
+end
+
+"""
+    transferoperator(pts, ϵ::TriangulationBinning, 
+        simplex_intersection_type::ExactIntersection) -> TransferOperatorTriangulationExact
+
+Estimate the invariant measure over the state space defined by `pts` using a triangulation 
+of the phase space as the partition, using exact simplex intersections to compute transition
+probabilities between the states (simplices).
+
+Example: If `pts = [rand(3) for i = 1:30`], then run
+`transferoperator(pts, TriangulationBinning(), ExactIntersection())`. 
+"""
+function transferoperator(pts, ϵ::TriangulationBinning, 
+        simplex_intersection_type::ExactIntersection)
+    
+    transferoperator_triangulation_exact(pts)
+end
 
 ######################## 
 # Rectangular binnings

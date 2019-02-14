@@ -1,3 +1,9 @@
+import CausalityToolsBase: 
+    TriangulationBinningScheme,
+    TriangulationBinning,
+    SimplexIntersectionType, 
+    ApproximateIntersection
+
 import ..TransferOperators:
     transferoperator_triangulation_approx
 
@@ -31,7 +37,6 @@ struct TriangulationApproxInvariantMeasure{PT, TT, TOT} <: AbstractTriangulation
 end 
 
 
-
 function triangulationapproxinvariantmeasure(points::Vector{Vector{T}}; n_sample_pts = 200, 
     sample_randomly::Bool = false, kwargs...) where {T}
     
@@ -44,7 +49,7 @@ function triangulationapproxinvariantmeasure(points::Vector{Vector{T}}; n_sample
 
     measure = invariantmeasure(TO, kwargs...)
 
-    TriangulationInvariantMeasureApprox(
+    TriangulationApproxInvariantMeasure(
         points, 
         inv_points, 
         triang, 
@@ -52,3 +57,25 @@ function triangulationapproxinvariantmeasure(points::Vector{Vector{T}}; n_sample
         measure)
 end
 
+
+function description(μ::TriangulationApproxInvariantMeasure)
+    T_pts = typeof(μ.points)
+    T_invpts = typeof(μ.invariantized_points)
+    triang = μ.triangulation
+    to = μ.transferoperator 
+    measure = μ.measure
+    
+    npts = 
+
+    invmeasure_type = typeof(μ)
+    return join(["TriangulationApproxInvariantMeasure", "\n",
+                "  μ.points:\t\t", T_pts,   "\n", 
+                 "  μ.invariantized_points:\t", T_invpts, "\n",
+                 "  μ.triangulation:\t", triang,
+                "  μ.transferoperator:\t", to, 
+                "  μ.measure:\t\t", measure])
+end
+
+Base.show(io::IO, μ::TriangulationApproxInvariantMeasure) = println(io, description(μ))
+
+export TriangulationApproxInvariantMeasure, triangulationapproxinvariantmeasure

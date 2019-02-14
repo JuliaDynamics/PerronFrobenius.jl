@@ -9,7 +9,7 @@ import StateSpaceReconstruction:
     DelaunayTriangulation,
     Simplex,
 	point_contained
-import Simplices: subsample_coeffs
+import StateSpaceReconstruction: subsample_coeffs
 import StaticArrays: Size, MMatrix
 import Statistics: det
 import InplaceOps: @!

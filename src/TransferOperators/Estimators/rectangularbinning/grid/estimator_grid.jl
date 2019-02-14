@@ -34,7 +34,7 @@ orbit = rand(1000, 3)
 x, y, z = orbit[:, 1], orbit[:, 2], orbit[:, 3]
 
 # Embedding E = {(y(t+1), y(t), x(t))}
-E = customembed([x, y], [2, 2, 1], [1, 0, 0]);
+E = cembed([x, y], [2, 2, 1], [1, 0, 0]);
 
 # Which bin sizes to use along each dimension?
 ϵ = [.4, .2, .4]

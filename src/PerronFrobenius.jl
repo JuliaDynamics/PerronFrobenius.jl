@@ -3,14 +3,14 @@ __precompile__(true)
 module PerronFrobenius
 
 using Reexport
-@reexport using CausalityToolsBase
-@reexport using StateSpaceReconstruction
+using CausalityToolsBase
+using StateSpaceReconstruction
 
 import StateSpaceReconstruction:
     GroupSlices,
     Embeddings.AbstractEmbedding,
     DelaunayTriangulation,
-    customembed,
+    cembed,
     invariantize
 
 

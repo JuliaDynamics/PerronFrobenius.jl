@@ -1,7 +1,7 @@
 import StateSpaceReconstruction
 import PerronFrobenius
 
-E = customembed([diff(rand(100)) for i = 1:4])
+E = cembed([diff(rand(100)) for i = 1:4])
 
 @testset "RectangularInvariantMeasure constructor" begin
 
