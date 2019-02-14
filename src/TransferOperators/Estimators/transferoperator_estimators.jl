@@ -48,6 +48,8 @@ function transferoperator(pts, ϵ::TriangulationBinning,
         sample_randomly = sample_randomly)
 end
 
+
+
 """
     transferoperator(pts, ϵ::TriangulationBinning, 
         simplex_intersection_type::ExactIntersection) -> TransferOperatorTriangulationExact
@@ -131,42 +133,7 @@ Discretize `points` using the provided `binning_scheme` and compute the transfer
 over the partition elements using the type of simplex intersections indicated by 
 `simplex_intersection_type`.
 """ 
-
-function transferoperator(invariant_pts, binning_scheme::TriangulationBinning, 
-        simplex_intersection_type::ApproximateIntersection; 
-        n_sample_pts::Int = 200, sample_randomly::Bool = false)
-
-    transferoperator_triangulation_approx(invariant_pts, n_sample_pts = n_sample_pts,
-        sample_randomly = sample_randomly)
-end
-
-
-""" 
-    transferoperator(points, binning_scheme::TriangulationBinningScheme,
-        simplex_intersection::SimplexIntersectionType; kwargs...)
-
-Discretize `points` using the provided `binning_scheme` and compute the transfer operator 
-over the partition elements using the type of simplex intersections indicated by 
-`simplex_intersection_type`.
-""" 
 transferoperator(invariant_pts, binning_scheme::TriangulationBinning, 
     simplex_intersection_type::SimplexIntersectionType; kwargs...)
-
-
-function transferoperator(invariant_pts, binning_scheme::TriangulationBinning, 
-        simplex_intersection_type::ApproximateIntersection; 
-        n_sample_pts::Int = 200, sample_randomly::Bool = false)
-
-    transferoperator_triangulation_approx(invariant_pts, n_sample_pts = n_sample_pts,
-        sample_randomly = sample_randomly)
-end
-
-
-function transferoperator(invariant_pts, binning_scheme::TriangulationBinning, 
-    simplex_intersection_type::ExactIntersection; 
-    n_sample_pts::Int = 200, sample_randomly::Bool = false)
-
-    transferoperator_triangulation_exact(invariant_pts)
-end
 
 export transferoperator

@@ -1,9 +1,6 @@
 using RecipesBase
 using LaTeXStrings
 
-include("TransferOperatorRectangularBinning.jl")
-include("TransferOperatorTriangulationExact.jl")
-include("TransferOperatorTriangulationApproximate.jl")
 
 @recipe function f(to::TransferOperatorTriangulationExact)
     seriestype := :heatmap

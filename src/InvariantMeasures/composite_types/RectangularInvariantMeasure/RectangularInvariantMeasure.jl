@@ -1,8 +1,8 @@
 import StateSpaceReconstruction:
     AbstractEmbedding,
+    Embeddings,
     assign_bin_labels,
-    assign_coordinate_labels,
-    TransferOperatorEstimatorRectangularBinVisits
+    assign_coordinate_labels
 
 import ..TransferOperators:
     BinVisits,
@@ -165,7 +165,7 @@ function rectangularinvariantmeasure(data::Dataset,
     rectangularinvariantmeasure(transpose(Matrix(data)), ϵ, estimator, kwargs...)
 end
 
-function rectangularinvariantmeasure(data::AbstractEmbedding,
+function rectangularinvariantmeasure(data::Embeddings.AbstractEmbedding,
         ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
         estimator = :TransferOperatorEstimatorRectangularBinning;
         kwargs...)

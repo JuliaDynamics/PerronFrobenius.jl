@@ -96,7 +96,7 @@ function boxorigins(points::AbstractArray{T, 2}, ϵ) where T
 end
 
 
-function boxorigins(E::AbstractEmbedding, ϵ)
+function boxorigins(E::Embeddings.AbstractEmbedding, ϵ)
     boxorigins(E.points, ϵ)
 end
 
@@ -399,7 +399,7 @@ function μϵF_induced_by_ϵj(points, ϵF, ϵⱼ)
 end
 
 
-μϵF_induced_by_ϵj(E::AbstractEmbedding, ϵF, ϵⱼ) =
+μϵF_induced_by_ϵj(E::Embeddings.AbstractEmbedding, ϵF, ϵⱼ) =
     μϵF_induced_by_ϵj(E.points, ϵF, ϵⱼ)
 
 export μϵF_induced_by_ϵj

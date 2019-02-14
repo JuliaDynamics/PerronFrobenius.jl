@@ -7,7 +7,7 @@ import SparseArrays: sparse
 
 import ..TransferOperatorRectangularBinning
 
-"""
+#= """
     TransferOperatorEstimatorRectangularBinVisits(bv::BinVisits;
                 allocate_frac = 1.0,
                 boundary_condition = :none)
@@ -189,7 +189,7 @@ function TransferOperatorEstimatorRectangularBinVisits(bv::BinVisits;
 
     TransferOperatorRectangularBinning(TO)
 end
-
+ =#
 """
     TransferOperatorEstimatorRectangularBinning(pts, ϵ; allocate_frac = 1.0,
         boundary_condition = :exclude)

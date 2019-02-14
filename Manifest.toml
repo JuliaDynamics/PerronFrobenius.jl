@@ -34,12 +34,10 @@ uuid = "96374032-68de-5a5b-8d9e-752f78720389"
 version = "0.7.1"
 
 [[CausalityToolsBase]]
-deps = ["ChaosTools", "DelayEmbeddings", "StaticArrays"]
+deps = ["ChaosTools", "DelayEmbeddings", "StaticArrays", "Test"]
 git-tree-sha1 = "b9fa83fcc442cdb3daddabfd530823f8a68038d5"
-repo-rev = "master"
-repo-url = "https://github.com/kahaaga/CausalityToolsBase.jl"
 uuid = "b1f25513-c649-51ee-8a1c-0e98d01ae897"
-version = "0.3.1+"
+version = "0.3.1"
 
 [[ChaosTools]]
 deps = ["Combinatorics", "DiffEqBase", "Distances", "DynamicalSystemsBase", "ForwardDiff", "LinearAlgebra", "NearestNeighbors", "Random", "Reexport", "Roots", "StaticArrays", "Statistics", "StatsBase", "Test"]
@@ -339,9 +337,9 @@ version = "0.3.0"
 
 [[Simplices]]
 deps = ["Conda", "Distributions", "LinearAlgebra", "Parameters", "Printf", "PyCall", "StaticArrays", "Test"]
-git-tree-sha1 = "a445694ab5a25856d0274a803a7062b9194b7a72"
+git-tree-sha1 = "c4d26367672aba5175060a5d05ee973fd4d29408"
 uuid = "d5428e67-3037-59ba-9ab1-57a04f0a3b6a"
-version = "0.2.3"
+version = "0.4.0"
 
 [[Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
@@ -364,9 +362,9 @@ version = "0.7.2"
 
 [[StateSpaceReconstruction]]
 deps = ["CausalityToolsBase", "Conda", "DelayEmbeddings", "Distances", "Distributions", "LinearAlgebra", "NearestNeighbors", "PyCall", "RecipesBase", "Reexport", "Simplices", "StaticArrays", "Statistics", "Test"]
-path = "/Users/kristian/Documents/juliapackages/StateSpaceReconstruction.jl"
+git-tree-sha1 = "935d309ea7477b7af34d1ec48d75f32cb94d3f8c"
 uuid = "1441a9f6-6a74-5418-a591-cdf1d78a07f0"
-version = "0.3.3+"
+version = "0.4.0"
 
 [[StaticArrays]]
 deps = ["InteractiveUtils", "LinearAlgebra", "Random", "Statistics", "Test"]
