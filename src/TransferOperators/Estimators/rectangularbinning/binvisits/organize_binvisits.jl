@@ -40,7 +40,9 @@ end
 ####################
 function summarise(bv::BinVisits)
     _type = typeof(bv)
-    "$_type"
+    L = length(bv.visits_whichbin)
+    L_unique = length(bv.visitors)
+    "$_type for $L points that occupy $L_unique bins"
 end
 Base.show(io::IO, bv::BinVisits) = println(io, summarise(bv))
 
