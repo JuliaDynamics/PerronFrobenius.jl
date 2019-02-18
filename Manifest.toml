@@ -91,9 +91,9 @@ uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 
 [[DiffEqBase]]
 deps = ["Compat", "IteratorInterfaceExtensions", "LinearAlgebra", "RecipesBase", "RecursiveArrayTools", "Requires", "Roots", "SparseArrays", "StaticArrays", "Statistics", "SuiteSparse", "TableTraits", "Test", "TreeViews"]
-git-tree-sha1 = "cd1f12b447ef3be91a4d061d3bb1d6459a978a78"
+git-tree-sha1 = "e8eb39fcea76aa7212df40536f4a67bd29e23401"
 uuid = "2b5f629d-d688-5b77-993f-72d75c75574e"
-version = "5.2.2"
+version = "5.2.3"
 
 [[DiffResults]]
 deps = ["Compat", "StaticArrays"]
@@ -331,9 +331,9 @@ uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
 
 [[SimpleDiffEq]]
 deps = ["DiffEqBase", "LinearAlgebra", "RecursiveArrayTools", "Reexport", "StaticArrays", "Test"]
-git-tree-sha1 = "f94e05f69db902bec20aabc267396f3f7098ccf6"
+git-tree-sha1 = "84fc2cddae3cbc1185629a667af9e8e6b6e3f2ac"
 uuid = "05bca326-078c-5bf0-a5bf-ce7c7982d7fd"
-version = "0.3.0"
+version = "0.3.1"
 
 [[Simplices]]
 deps = ["Conda", "Distributions", "LinearAlgebra", "Parameters", "Printf", "PyCall", "StaticArrays", "Test"]
@@ -362,9 +362,9 @@ version = "0.7.2"
 
 [[StateSpaceReconstruction]]
 deps = ["CausalityToolsBase", "Conda", "DelayEmbeddings", "Distances", "Distributions", "LinearAlgebra", "NearestNeighbors", "PyCall", "RecipesBase", "Reexport", "Simplices", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "935d309ea7477b7af34d1ec48d75f32cb94d3f8c"
+git-tree-sha1 = "6c1702c1c8aaf27de90bb4a711df6912f49c678f"
 uuid = "1441a9f6-6a74-5418-a591-cdf1d78a07f0"
-version = "0.4.0"
+version = "0.4.1"
 
 [[StaticArrays]]
 deps = ["InteractiveUtils", "LinearAlgebra", "Random", "Statistics", "Test"]
