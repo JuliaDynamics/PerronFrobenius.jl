@@ -10,7 +10,7 @@ import CausalityToolsBase:
 
 import StaticArrays: SVector, MVector 
 import DelayEmbeddings: Dataset
-
+import CausalityToolsBase: get_minima_and_edgelengths, encode
 
 """ 
     transferoperator(points, binning_scheme::RectangularBinningScheme; kwargs...)
@@ -71,6 +71,27 @@ end
 # Rectangular binnings
 ######################## 
 
+function transferoperator(points::Vector{T}, binning_scheme::RectangularBinning;  
+    allocate_frac::Float64 = 1.0, boundary_condition = :none) where {T <:Union{SVector, MVector, Vector}}
+
+    # Identify which bins of the partition resulting from using ϵ each
+    # point of the embedding visits.
+    mini, edgelengths = get_minima_and_edgelengths(points, binning_scheme)
+    encoded_pts = encode(points, mini, edgelengths)
+
+    #visited_bins = assign_bin_labels(points, binning_scheme.ϵ)
+
+    # Which are the visited bins, which points
+    # visits which bin, repetitions, etc...
+    binvisits = get_binvisits(encoded_pts)
+
+    # Use that information to estimate transfer operator
+    estimate_transferoperator_from_binvisits(binvisits,
+                        allocate_frac = allocate_frac,
+                        boundary_condition = boundary_condition)
+end
+
+
 function transferoperator(points::AbstractArray{T, 2}, binning_scheme::RectangularBinning;  
         allocate_frac::Float64 = 1.0, boundary_condition = :none) where {T}
 
@@ -78,16 +99,21 @@ function transferoperator(points::AbstractArray{T, 2}, binning_scheme::Rectangul
         points = transpose(points)
     end
 
+    pts = [points[:, i] for i = 1:maximum(size(points))]
+
     # Identify which bins of the partition resulting from using ϵ each
     # point of the embedding visits.
-    visited_bins = assign_bin_labels(points, binning_scheme.ϵ)
+    mini, edgelengths = get_minima_and_edgelengths(pts, binning_scheme)
+    encoded_pts = encode(pts, mini, edgelengths)
+
+    #visited_bins = assign_bin_labels(points, binning_scheme.ϵ)
 
     # Which are the visited bins, which points
     # visits which bin, repetitions, etc...
-    binvisits = organize_bin_labels(visited_bins)
+    binvisits = get_binvisits(encoded_pts)
 
     # Use that information to estimate transfer operator
-    TransferOperatorEstimatorRectangularBinVisits(binvisits,
+    estimate_transferoperator_from_binvisits(binvisits,
                         allocate_frac = allocate_frac,
                         boundary_condition = boundary_condition)
 end

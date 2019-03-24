@@ -1,7 +1,8 @@
 import DelayEmbeddings:
     Dataset
 
-import ..TransferOperators: organize_bin_labels
+import ..TransferOperators: get_binvisits
+import CausalityToolsBase
 
 import StaticArrays:
     SVector,
@@ -70,8 +71,8 @@ An average rectangular invariant measure induced at resolution
 """
 struct AverageRectangularInvariantMeasure{T} <: AbstractRectangularInvariantMeasure where {T}
     points::AbstractArray{T, 2}
-    ϵF::Union{Int, Float64, Vector{Int}, Vector{Float64}}
-    ϵs
+    ϵF::RectangularBinning
+    ϵs::AbstractArray{RectangularBinning, 1}
     induced_measures::Vector{InducedRectangularInvariantMeasure{T}}
     measure_ϵF::RectangularInvariantMeasure
     measure_ϵF_averaged::RectangularInvariantMeasure
@@ -101,10 +102,16 @@ This constructor returns an `AverageRectangularInvariantMeasure` instance.
     is induced. Must be an iterable of valid `ϵ` (see the `ϵF` argument for
     details).
 """
-function averagerectangularinvariantmeasure(points::AbstractArray{T, 2}, ϵF, ϵs;
+function averagerectangularinvariantmeasure(points::AbstractArray{T, 2}, 
+        ϵF::RectangularBinning, 
+        ϵs::AbstractArray{RectangularBinning, 1};
         estimator::Symbol = :TransferOperatorEstimatorRectangularBinning,
         kwargs...) where {T}
     
+    ptsvec = [points[:, i] for i = 1:size(points, 2)]
+    edgelengths_ϵF = get_edgelengths(ptsvec, ϵF)
+    edgelengths_ϵF = [get_edgelengths(ptsvec, ϵi) for (k, ϵi) in enumerate(ϵs)]
+
     induced_measures = [inducedrectangularinvariantmeasure(points, ϵF, ϵᵢ) for ϵᵢ in ϵs]
     avg_measure = average_measure(induced_measures)
 
@@ -117,9 +124,10 @@ function averagerectangularinvariantmeasure(points::AbstractArray{T, 2}, ϵF, ϵ
     measure_ϵF::RectangularInvariantMeasure = rectangularinvariantmeasure(points, ϵF)
     avg_measure_ϵF::RectangularInvariantMeasure = RectangularInvariantMeasure(
         measure_ϵF.points,
-        measure_ϵF.ϵ,
-        measure_ϵF.ϵ_absolute,
-        measure_ϵF.visited_bins_inds,
+        measure_ϵF.binning_scheme,
+        measure_ϵF.axisminima,
+        measure_ϵF.edgelengths,
+        hcat(measure_ϵF.encoded_points...,),
         measure_ϵF.visited_bins_coordinates,
         measure_ϵF.binvisits,
         measure_ϵF.transfermatrix,
@@ -128,8 +136,8 @@ function averagerectangularinvariantmeasure(points::AbstractArray{T, 2}, ϵF, ϵ
 
     AverageRectangularInvariantMeasure(
         points,
-        ϵF,
-        ϵs,
+        ϵF,#get_edgelengths(points, ϵF.ϵ),#
+        ϵs,#[get_edgelengths(points, ϵs[i]) for i = 1:length(ϵs)],
         induced_measures,
         measure_ϵF,
         avg_measure_ϵF

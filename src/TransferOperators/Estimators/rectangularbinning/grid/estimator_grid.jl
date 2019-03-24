@@ -8,7 +8,7 @@ import SparseArrays: sparse
 import ..TransferOperatorRectangularBinning
 
 #= """
-    TransferOperatorEstimatorRectangularBinVisits(bv::BinVisits;
+    estimate_transferoperator_from_binvisits(bv::BinVisits;
                 allocate_frac = 1.0,
                 boundary_condition = :none)
 
@@ -45,7 +45,7 @@ visited_bins = assign_bin_labels(E, ϵ)
 
 # Which are the visited bins, which points
 # visits which bin, repetitions, etc...
-binvisits = organize_bin_labels(visited_bins)
+binvisits = get_binvisits(visited_bins)
 
 # Use that information to estimate transfer operator
 TO = transferoperator(binvisits)
@@ -55,7 +55,7 @@ TO = transferoperator(binvisits)
 all(sum(TO, 2) .≈ 1)
 ```
 """
-function TransferOperatorEstimatorRectangularBinVisits(bv::BinVisits;
+function estimate_transferoperator_from_binvisits(bv::BinVisits;
                 allocate_frac = 1.0,
                 boundary_condition = :none)
 
@@ -250,10 +250,10 @@ function TransferOperatorEstimatorRectangularBinning(
 
     # Which are the visited bins, which points
     # visits which bin, repetitions, etc...
-    binvisits = organize_bin_labels(visited_bins)
+    binvisits = get_binvisits(visited_bins)
 
     # Use that information to estimate transfer operator
-    TransferOperatorEstimatorRectangularBinVisits(binvisits,
+    estimate_transferoperator_from_binvisits(binvisits,
 						allocate_frac = allocate_frac,
 						boundary_condition = boundary_condition)
 end
@@ -275,14 +275,14 @@ function TransferOperatorEstimatorRectangularBinning(
 
     # Which are the visited bins, which points
     # visits which bin, repetitions, etc...
-    binvisits = organize_bin_labels(visited_bins)
+    binvisits = get_binvisits(visited_bins)
 
     # Use that information to estimate transfer operator
-    TransferOperatorEstimatorRectangularBinVisits(binvisits,
+    estimate_transferoperator_from_binvisits(binvisits,
                         allocate_frac = allocate_frac,
                         boundary_condition = boundary_condition)
 end
 
 export
-TransferOperatorEstimatorRectangularBinVisits,
+estimate_transferoperator_from_binvisits,
 TransferOperatorEstimatorRectangularBinning

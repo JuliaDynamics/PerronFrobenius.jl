@@ -3,33 +3,26 @@ import DelayEmbeddings.Dataset
 import ..InvariantMeasures:
     TransferOperatorEstimatorRectangularBinning,
     TransferOperatorRectangularBinning
+import CausalityToolsBase: encode, get_minima_and_edgelengths
 
-function invariantmeasure(data::AbstractArray{T, 2},
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+function invariantmeasure(data, ϵ,
         estimator = :TransferOperatorEstimatorRectangularBinning;
         kwargs...) where T
+    
     if estimator == :TransferOperatorEstimatorRectangularBinning
-        # Identify which bins of the partition resulting from using ϵ each
-        # point of the embedding visits.
-
-        # The indices, counting from the start of each coordinate axis
-        # in steps given by ϵ
-        visited_bins_inds = assign_bin_labels(data, ϵ)
-
-        # The coordinate of the bin origins
-        visited_bins_coordinates = assign_coordinate_labels(data, ϵ)
+        # Encode the points (identify which bin, given the 
+        # rectangular binning scheme ϵ, each point falls in)
+        mini, edgelengths = get_minima_and_edgelengths(data, ϵ)
+        encoded_pts = encode(data, mini, edgelengths)
 
         # Which are the visited bins, which points
         # visits which bin, repetitions, etc...
-        binvisits = organize_bin_labels(visited_bins_inds)
+        binvisits = get_binvisits(encoded_pts)
 
         # Use that information to estimate transfer operator
-        TO = TransferOperatorEstimatorRectangularBinVisits(binvisits)
+        TO = estimate_transferoperator_from_binvisits(binvisits)
 
-        # Compute invariant measure
-        ivm = invariantmeasure(TO; kwargs...)
-
-        return ivm
+        return invariantmeasure(TO; kwargs...)
     end
 end
 
