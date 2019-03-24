@@ -22,8 +22,9 @@ import PerronFrobenius
             @testset "From precomputed bin visits" begin
                 @testset "2D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_2D, ϵ)
-                    bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = TransferOperatorEstimatorRectangularBinVisits(bininfo)
+                    bininfo = get_binvisits(bins_visited_by_orbit)
+                    TO = estimate_transferoperator_from_binvisits(bininfo)
+                    
                     @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     # Last row might sum to zero, because the last point does not need to
@@ -44,8 +45,8 @@ import PerronFrobenius
 
                 @testset "3D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_3D, ϵ)
-                    bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = TransferOperatorEstimatorRectangularBinVisits(bininfo)
+                    bininfo = get_binvisits(bins_visited_by_orbit)
+                    TO = estimate_transferoperator_from_binvisits(bininfo)
                     @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     # Last row might sum to zero, because the last point does not need to
@@ -66,8 +67,8 @@ import PerronFrobenius
 
                 @testset "4D" begin
                     bins_visited_by_orbit = assign_bin_labels(E_4D, ϵ)
-                    bininfo = organize_bin_labels(bins_visited_by_orbit)
-                    TO = TransferOperatorEstimatorRectangularBinVisits(bininfo)
+                    bininfo = get_binvisits(bins_visited_by_orbit)
+                    TO = estimate_transferoperator_from_binvisits(bininfo)
                     @test typeof(TO) <: TransferOperatorRectangularBinning
 
                     # Last row might sum to zero, because the last point does not need to

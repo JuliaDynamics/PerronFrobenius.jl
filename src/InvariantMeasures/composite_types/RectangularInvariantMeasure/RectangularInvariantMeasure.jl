@@ -1,5 +1,4 @@
 import StateSpaceReconstruction:
-    AbstractEmbedding,
     Embeddings,
     assign_bin_labels,
     assign_coordinate_labels
@@ -7,14 +6,16 @@ import StateSpaceReconstruction:
 import ..TransferOperators:
     BinVisits,
     TransferOperatorRectangularBinning,
-    organize_bin_labels,
-    TransferOperatorEstimatorRectangularBinVisits
+    get_binvisits,
+    estimate_transferoperator_from_binvisits
 
 import DelayEmbeddings:
     Dataset
 
 import StaticArrays:
     SVector, MVector
+
+import CausalityToolsBase: get_minima_and_edgelengths, encode, RectangularBinning, RectangularBinningScheme
 
 
 export RectangularInvariantMeasure, rectangularinvariantmeasure
@@ -64,11 +65,12 @@ discretized state space.
 - **`measure::InvariantDistribution`**: The invariant measure over the visited bins.
 """
 struct RectangularInvariantMeasure{T} <: AbstractRectangularInvariantMeasure where {T}
-    points::AbstractArray{T, 2}
-    ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}}
-    ϵ_absolute::Vector{Float64}
-    visited_bins_inds::AbstractArray{Int,2}
-    visited_bins_coordinates::AbstractArray{Float64,2}
+    points
+    binning_scheme::RectangularBinning
+    axisminima::Vector{Float64}
+    edgelengths::Vector{Float64}
+    encoded_points::Vector{T}
+    visited_bins_coordinates::Vector{Vector{Float64}}
     binvisits::BinVisits
     transfermatrix::TransferOperatorRectangularBinning
     measure::InvariantDistribution
@@ -115,40 +117,39 @@ Returns a `RectangularInvariantMeasure` instance.
 """
 function rectangularinvariantmeasure end
 
-function rectangularinvariantmeasure(data::AbstractArray{T, 2},
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+
+function rectangularinvariantmeasure(data::Vector{T},
+        binning_scheme,
         estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
-        kwargs...) where {T}
+        kwargs...) where {T <: Union{Vector, SVector, MVector}}
 
     if estimator == :TransferOperatorEstimatorRectangularBinning
         # Identify which bins of the partition resulting from using ϵ each
         # point of the embedding visits.
 
         # Get absolute bin sizes 
-        ϵ_absolute = minima_and_stepsizes(data, ϵ)[2]
-
-        # The indices, counting from the start of each coordinate axis
-        # in steps given by ϵ
-        visited_bins_inds = assign_bin_labels(data, ϵ)
+        mini, edgelengths = get_minima_and_edgelengths(data, binning_scheme)
+        encoded_pts = encode(data, mini, edgelengths)
 
         # The coordinate of the bin origins
-        visited_bins_coordinates = assign_coordinate_labels(data, ϵ)
+        visited_bins_coordinates = [edgelengths .* pt .+ mini for pt in encoded_pts] #for pt #assign_coordinate_labels(data, ϵ)
 
         # Which are the visited bins, which points
         # visits which bin, repetitions, etc...
-        binvisits = organize_bin_labels(visited_bins_inds)
+        binvisits = get_binvisits(encoded_pts)
 
         # Use that information to estimate transfer operator
-        TO = TransferOperatorEstimatorRectangularBinVisits(binvisits)
+        TO = estimate_transferoperator_from_binvisits(binvisits)
 
         # Compute invariant measure
         ivm = invariantmeasure(TO; kwargs...)
 
         RectangularInvariantMeasure(
             data,
-            ϵ,
-            ϵ_absolute,
-            visited_bins_inds,
+            (binning_scheme isa RectangularBinning) ? binning_scheme : RectangularBinning(binning_scheme),
+            mini,
+            edgelengths,
+            encoded_pts,
             visited_bins_coordinates,
             binvisits,
             TO,
@@ -157,30 +158,41 @@ function rectangularinvariantmeasure(data::AbstractArray{T, 2},
     end
 end
 
+function rectangularinvariantmeasure(data::AbstractArray{T, 2},
+    binning_scheme,
+    estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
+    kwargs...) where {T <: Real}
+    pts = [data[:, i] for i = 1:maximum(size(data))]
+
+    rectangularinvariantmeasure(pts, binning_scheme, estimator; kwargs...)
+end
+ 
+function rectangularinvariantmeasure(data::Embeddings.AbstractEmbedding,
+    ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+    estimator = :TransferOperatorEstimatorRectangularBinning;
+    kwargs...)
+
+    rectangularinvariantmeasure(data.points, ϵ, estimator, kwargs...)
+end 
+
+#= 
 function rectangularinvariantmeasure(data::Dataset,
         ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
         estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
         kwargs...)
 
     rectangularinvariantmeasure(transpose(Matrix(data)), ϵ, estimator, kwargs...)
-end
+end =#
 
-function rectangularinvariantmeasure(data::Embeddings.AbstractEmbedding,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
-        estimator = :TransferOperatorEstimatorRectangularBinning;
-        kwargs...)
-
-    rectangularinvariantmeasure(data.points, ϵ, estimator, kwargs...)
-end
-
+#= 
 function rectangularinvariantmeasure(data::Vector{Vector{T}},
         ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
         estimator = :TransferOperatorEstimatorRectangularBinning;
         kwargs...) where {T}
 
     rectangularinvariantmeasure(hcat(data...,), ϵ, estimator, kwargs...)
-end
-
+end =#
+#= 
 function rectangularinvariantmeasure(data::Vector{SVector{D, T}},
         ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
         estimator = :TransferOperatorEstimatorRectangularBinning;
@@ -198,36 +210,38 @@ function rectangularinvariantmeasure(data::Vector{MVector{D, T}},
     rectangularinvariantmeasure(Array(hcat(data...,)), ϵ, estimator, kwargs...)
 end
 
-
+ =#
 
 function summarise(invm::RectangularInvariantMeasure)
+    #@show invm
     D = size(invm.points, 1)
     npoints = size(invm.points, 2)
-
-    points_str = "  points: $npoints $D-dimensional points\n"
+    unique_states_visited = length(unique(invm.encoded_points))
+    #points_str = "  points: $npoints $D-dimensional points\n"
 
     # Discretization
-    ϵ = invm.ϵ
-    ϵ_abs = invm.ϵ_absolute
+    ϵ = invm.binning_scheme
+    #ϵ_abs = invm.edgelengths
 
-    ϵ_str = "  ϵ: $ϵ\n"
-    ϵ_abs_str = "  ϵ_absolute: $ϵ_abs\n"
+    #ϵ_str = "  binning_scheme: $ϵ\n"
+    #ϵ_abs_str = "  edgelengths: $ϵ_abs\n"
 
-    n_visited_bins = size(unique(invm.visited_bins_inds, dims = 2), 2)
-    coord_minima = tuple(minimum(invm.visited_bins_coordinates, dims = 2)...,)
-    coord_maxima = tuple(maximum(invm.visited_bins_coordinates, dims = 2)...,)
+    #n_visited_bins = size(unique(invm.visited_bins_inds, dims = 2), 2)
+    #coord_minima = tuple(minimum(invm.visited_bins_coordinates, dims = 2)...,)
+    #coord_maxima = tuple(maximum(invm.visited_bins_coordinates, dims = 2)...,)
 
-    inds_str = "  visited_bins_inds: $n_visited_bins unique bins (rectangular boxes) are visited by the points\n"
-    coords_str = "  visited_bins_coords: Bins are distributed within the hypercube enclosing \n\tx_{min} =$coord_minima to \n\tx_{max} = $coord_maxima\n"
-    bv = invm.binvisits
-    binvisits_str = "  binvisits: $bv"
+    #inds_str = "  visited_bins_inds: $n_visited_bins unique bins (rectangular boxes) are visited by the points\n"
+    #coords_str = "  visited_bins_coords: Bins are distributed within the hypercube enclosing \n\tx_{min} =$coord_minima to \n\tx_{max} = $coord_maxima\n"
+    #bv = invm.binvisits
+    #binvisits_str = "  binvisits: $bv"
 
-    TO = invm.transfermatrix
-    iv = invm.measure
-    transfermatrix_str = "  transfermatrix: $TO"
-    measure_str = "  measure: $iv"
-    return join(["RectangularInvariantMeasure\n", points_str, ϵ_str, ϵ_abs_str, inds_str, coords_str,
-                binvisits_str, transfermatrix_str, measure_str])
+    #TO = invm.transfermatrix
+    #iv = invm.measure
+    #transfermatrix_str = "  transfermatrix: $TO"
+    #measure_str = "  measure: $iv"
+    #return join(["RectangularInvariantMeasure\n", points_str, ϵ_str, ϵ_abs_str, inds_str, coords_str,
+    #            binvisits_str, transfermatrix_str, measure_str])
+    return join([typeof(invm), "from $npoints $D-dimensional points visiting $unique_states_visited unique states in the partition formed by the binning scheme $ϵ"]) 
 end
 
 Base.show(io::IO, invm::RectangularInvariantMeasure) = println(io, summarise(invm))

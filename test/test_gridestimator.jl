@@ -9,11 +9,11 @@ tol = 1e-10
     bins_visited_by_orbit_2D = assign_bin_labels(E_2D, ϵ)
     bins_visited_by_orbit_3D = assign_bin_labels(E_3D, ϵ)
 
-    bininfo_2D = organize_bin_labels(bins_visited_by_orbit_2D)
-    bininfo_3D = organize_bin_labels(bins_visited_by_orbit_3D)
+    bininfo_2D = get_binvisits(bins_visited_by_orbit_2D)
+    bininfo_3D = get_binvisits(bins_visited_by_orbit_3D)
 
-    TO_2D = TransferOperatorEstimatorRectangularBinVisits(bininfo_2D)
-    TO_3D = TransferOperatorEstimatorRectangularBinVisits(bininfo_3D)
+    TO_2D = estimate_transferoperator_from_binvisits(bininfo_2D)
+    TO_3D = estimate_transferoperator_from_binvisits(bininfo_3D)
 
     invm_2D = invariantmeasure(TO_2D)
     invm_3D = invariantmeasure(TO_3D)

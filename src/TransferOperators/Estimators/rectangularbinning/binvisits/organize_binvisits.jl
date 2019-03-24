@@ -74,7 +74,7 @@ function whichpoints_visit_whichbins(A, U)
 end
 
 """
-    organize_bin_labels(visited_bin_labels::Array{Float64})
+    get_binvisits(visited_bin_labels)
 
 Organise bin labels by identifying bins that are visited multiple times,
 and finding which points fall in which bins.
@@ -82,9 +82,9 @@ and finding which points fall in which bins.
 `visited_bin_labels` is an array where each column cᵢ (corresponding to
 the point pᵢ) represents a tuple of integers identifying the position
 of that bin, relative to some minimum value, given a stepsize `ϵ`.
-See `assign_bin_labels` for more information.
+See `assign_bin_labels` or `encode` for more information.
 """
-function organize_bin_labels(visited_bin_labels::Array{Int, 2})
+function get_binvisits(visited_bin_labels::Array{Int, 2})
     slices = groupslices(visited_bin_labels, 2)
     first_visited_by = firstinds(slices)
     visitors = groupinds(slices)
@@ -93,6 +93,8 @@ function organize_bin_labels(visited_bin_labels::Array{Int, 2})
     BinVisits(first_visited_by, visitors, visits_whichbin)
 end
 
+get_binvisits(points::Vector{Vector{T}}) where T = get_binvisits(hcat(points...,))
+
 export
 BinVisits,
-organize_bin_labels
+get_binvisits

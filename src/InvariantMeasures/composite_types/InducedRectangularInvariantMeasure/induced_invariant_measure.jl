@@ -1,8 +1,8 @@
 import DelayEmbeddings:
     Dataset
 
-import StateSpaceReconstruction:
-	AbstractEmbedding,
+import StateSpaceReconstruction: 
+    Embeddings,
     minima_and_stepsizes
     
 import StaticArrays:
