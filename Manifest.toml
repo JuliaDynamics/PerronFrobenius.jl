@@ -34,10 +34,10 @@ uuid = "96374032-68de-5a5b-8d9e-752f78720389"
 version = "0.7.1"
 
 [[CausalityToolsBase]]
-deps = ["ChaosTools", "DelayEmbeddings", "StaticArrays", "Test"]
-git-tree-sha1 = "e4adc220aaeda309d1240e51bddcbcfaf637c3bd"
+deps = ["ChaosTools", "DelayEmbeddings", "Distances", "NearestNeighbors", "StaticArrays", "Statistics", "Test"]
+git-tree-sha1 = "8e8423fa6c182b1a444fef210911576aa3a04cc8"
 uuid = "b1f25513-c649-51ee-8a1c-0e98d01ae897"
-version = "0.3.3"
+version = "0.3.5"
 
 [[ChaosTools]]
 deps = ["Combinatorics", "DiffEqBase", "Distances", "DynamicalSystemsBase", "ForwardDiff", "LinearAlgebra", "NearestNeighbors", "Random", "Reexport", "Roots", "StaticArrays", "Statistics", "StatsBase", "Test"]
@@ -59,9 +59,9 @@ version = "0.2.0"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "195a3ffcb8b0762684b6821de18f83a16455c6ea"
+git-tree-sha1 = "84aa74986c5b9b898b0d1acaf3258741ee64754f"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "2.0.0"
+version = "2.1.0"
 
 [[Conda]]
 deps = ["Compat", "JSON", "VersionParsing"]
@@ -259,9 +259,9 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[PyCall]]
 deps = ["Conda", "Dates", "Libdl", "LinearAlgebra", "MacroTools", "Serialization", "Statistics", "Test", "VersionParsing"]
-git-tree-sha1 = "29febb62247356e13ef87bf253d1cda10de74bfc"
+git-tree-sha1 = "5a65d9bfd7099c2baa13d2aecf3cde752092a95b"
 uuid = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
-version = "1.91.0"
+version = "1.91.1"
 
 [[QuadGK]]
 deps = ["DataStructures", "LinearAlgebra", "Test"]
