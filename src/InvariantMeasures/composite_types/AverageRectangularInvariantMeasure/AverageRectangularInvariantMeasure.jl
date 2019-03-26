@@ -109,10 +109,10 @@ function averagerectangularinvariantmeasure(points::AbstractArray{T, 2},
         kwargs...) where {T}
     
     ptsvec = [points[:, i] for i = 1:size(points, 2)]
-    edgelengths_ϵF = get_edgelengths(ptsvec, ϵF)
-    edgelengths_ϵF = [get_edgelengths(ptsvec, ϵi) for (k, ϵi) in enumerate(ϵs)]
+    edgelengths_ϵF = CausalityToolsBase.get_edgelengths(ptsvec, ϵF)
+    edgelengths_ϵs = [CausalityToolsBase.get_edgelengths(ptsvec, ϵi) for (k, ϵi) in enumerate(ϵs)]
 
-    induced_measures = [inducedrectangularinvariantmeasure(points, ϵF, ϵᵢ) for ϵᵢ in ϵs]
+    induced_measures = [inducedrectangularinvariantmeasure(points, edgelengths_ϵF, edgelengths_ϵs) for ϵᵢ in ϵs]
     avg_measure = average_measure(induced_measures)
 
     # Check that measure sums to 1! With too few input points and too fine partitions, 
@@ -143,6 +143,13 @@ function averagerectangularinvariantmeasure(points::AbstractArray{T, 2},
         avg_measure_ϵF
     )
 end
+
+averagerectangularinvariantmeasure(points::AbstractArray{T, 2}, ϵF, ϵs) where T = 
+    averagerectangularinvariantmeasure(
+        points, 
+        RectangularBinning(ϵF), 
+        [RectangularBinning(ϵi) for (i, ϵi) in enumerate(ϵs)]
+        )
 
 function averagerectangularinvariantmeasure(points::Vector{Vector{T}}, ϵF, ϵs) where {T}
     averagerectangularinvariantmeasure(hcat(points...,), ϵF, ϵs)
