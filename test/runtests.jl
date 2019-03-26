@@ -22,3 +22,4 @@ include("test_gridestimator.jl")
 include("test_transferoperator_rectangular.jl")
 
 #include("triangulations.jl")
+include("test_triangulationestimators.jl")

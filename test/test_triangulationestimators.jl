@@ -3,15 +3,15 @@ import StateSpaceReconstruction
 @testset "Triangulation estimators" begin
 
 
-	pts = [rand(3) for i = 1:10]
-
-	DT = DelaunayTriangulation(pts)
+	pts = invariantize([rand(3) for i = 1:20])
 
 	TOa = transferoperator_triangulation_approx(pts, n_sample_pts = 50)
 	TOe = transferoperator_triangulation_exact(pts)
 
 	@test TOa isa TransferOperatorTriangulationApprox
 	@test TOe isa TransferOperatorTriangulationExact
+    @test minimum(sum(TOa.transfermatrix, dims = 2)) > 0.99
+    @test minimum(sum(TOe.transfermatrix, dims = 2)) > 0.99
 
     # @testset "Triangulation approximate estimator" begin
     #     E = StateSpaceReconstruction.cembed([diff(rand(15)) for i = 1:3])
