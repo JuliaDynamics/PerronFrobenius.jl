@@ -18,7 +18,7 @@ invariant measure over the states from the transfer matrix.
 
 ```@repl s
 ts = [diff(rand(30)) for i = 1:3]
-E = invariantize(embed(ts))
+E = invariantize(cembed(ts))
 triang = triangulate(E)
 TO = transferoperator(triang)
 ```
@@ -57,7 +57,7 @@ This also works on embeddings from `StateSpaceReconstruction.jl`:
 
 ```@repl s
 data = rand(3, 3000)
-E = embed(data)
+E = cembed(data)
 TO = TransferOperatorEstimatorRectangularBinning(E, 0.3)
 maxprob = min(1, maximum(TO.TO)*1.1);
 heatmap(TO.TO, clims=(0, maxprob));

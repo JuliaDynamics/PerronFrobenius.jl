@@ -1,6 +1,6 @@
-import StateSpaceReconstruction
-import PerronFrobenius
-
+using StateSpaceReconstruction
+using PerronFrobenius
+using Test 
 E = cembed([diff(rand(100)) for i = 1:4])
 
 @testset "RectangularInvariantMeasure constructor" begin
