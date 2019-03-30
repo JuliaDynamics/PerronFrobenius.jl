@@ -1,4 +1,8 @@
-## Release 0.5.0
+## Release 0.5.2
+
+- Require newest StateSpaceReconstruction.jl version, so that invariantizing works properly after PyCall syntax update.
+
+## Release 0.5.1
 
 ### Breaking changes
 - `rectangularinvariantemeasure` now always needs an instance of `RectangularBinning` to 

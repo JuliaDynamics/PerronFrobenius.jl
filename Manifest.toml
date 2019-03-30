@@ -386,9 +386,9 @@ version = "0.7.2"
 
 [[StateSpaceReconstruction]]
 deps = ["CausalityToolsBase", "Conda", "DelayEmbeddings", "Distances", "Distributions", "LinearAlgebra", "NearestNeighbors", "PyCall", "RecipesBase", "Reexport", "Simplices", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "6c1702c1c8aaf27de90bb4a711df6912f49c678f"
+git-tree-sha1 = "829152d38535b0735b53ad1718ff6555c56922ae"
 uuid = "1441a9f6-6a74-5418-a591-cdf1d78a07f0"
-version = "0.4.1"
+version = "0.4.2"
 
 [[StaticArrays]]
 deps = ["InteractiveUtils", "LinearAlgebra", "Random", "Statistics", "Test"]
