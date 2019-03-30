@@ -15,7 +15,7 @@ import DelayEmbeddings:
 import StaticArrays:
     SVector, MVector
 
-import CausalityToolsBase: get_minima_and_edgelengths, encode, RectangularBinning, RectangularBinningScheme
+import CausalityToolsBase: get_minima_and_edgelengths, encode, RectangularBinning, RectangularBinningScheme, CustomReconstruction
 
 
 export RectangularInvariantMeasure, rectangularinvariantmeasure
@@ -166,63 +166,37 @@ function rectangularinvariantmeasure(data::Dataset,
     rectangularinvariantmeasure(data.data, ϵ, estimator, kwargs...)
 end 
 
+
+function rectangularinvariantmeasure(data::CustomReconstruction,
+    ϵ::RectangularBinning,
+    estimator = :TransferOperatorEstimatorRectangularBinning;
+    kwargs...)
+
+    rectangularinvariantmeasure(data.reconstructed_pts, ϵ, estimator, kwargs...)
+end 
+
 function rectangularinvariantmeasure(data::AbstractArray{T, 2},
     binning_scheme::RectangularBinning,
     estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
     kwargs...) where {T <: Real}
     pts = [data[:, i] for i = 1:maximum(size(data))]
 
-    rectangularinvariantmeasure(pts, binning_scheme, estimator; kwargs...)
+    throw(ArgumentError("`data` must be a vector of vectors, a CustomReconstruction instance or a Dataset instance."))
 end
  
-function rectangularinvariantmeasure(data::Embeddings.AbstractEmbedding,
-    ϵ::RectangularBinning,
-    estimator = :TransferOperatorEstimatorRectangularBinning;
-    kwargs...)
-
-    rectangularinvariantmeasure(data.points, ϵ, estimator, kwargs...)
-end 
-
-#= 
-function rectangularinvariantmeasure(data::Dataset,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
-        estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
-        kwargs...)
-
-    rectangularinvariantmeasure(transpose(Matrix(data)), ϵ, estimator, kwargs...)
-end =#
-
-#= 
-function rectangularinvariantmeasure(data::Vector{Vector{T}},
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
-        estimator = :TransferOperatorEstimatorRectangularBinning;
-        kwargs...) where {T}
-
-    rectangularinvariantmeasure(hcat(data...,), ϵ, estimator, kwargs...)
-end =#
-#= 
-function rectangularinvariantmeasure(data::Vector{SVector{D, T}},
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
-        estimator = :TransferOperatorEstimatorRectangularBinning;
-        kwargs...) where {D, T}
-
-    rectangularinvariantmeasure(Array(hcat(data...,)), ϵ, estimator, kwargs...)
-end
-
-
-function rectangularinvariantmeasure(data::Vector{MVector{D, T}},
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
-        estimator = :TransferOperatorEstimatorRectangularBinning;
-        kwargs...) where {D, T}
-
-    rectangularinvariantmeasure(Array(hcat(data...,)), ϵ, estimator, kwargs...)
-end
-
- =#
 
 function summarise(invm::RectangularInvariantMeasure)
-    D = size(invm.points, 1)
-    npoints = size(invm.points, 2)
+    if invm.points isa AbstractArray{T, 2} where T 
+        if size(invm.points, 1) > size(invm.points, 2)
+            npoints = size(invm.points, 1)
+        else 
+            npoints = size(invm.points, 2)
+        end
+    else 
+        npoints = length(invm.points)
+    end
+
+    D = length(invm.encoded_points[1])
     unique_states_visited = length(unique(invm.encoded_points))
     ϵ = invm.binning_scheme
     
