@@ -1,5 +1,21 @@
-import StateSpaceReconstruction
-import PerronFrobenius
+using StateSpaceReconstruction
+using PerronFrobenius
+using StaticArrays 
+using DelayEmbeddings
+
+Vpts = [rand(4) for i = 1:50]
+Dpts = Dataset([rand(4) for i = 1:50])
+Spts = Dataset([rand(4) for i = 1:50])
+Mpts = Dataset([rand(4) for i = 1:50])
+pts = rand(50, 4)
+Tpts = rand(4, 50)
+
+@test transferoperator(pts, RectangularBinning(3)) isa TransferOperatorRectangularBinning
+@test transferoperator(Dpts, RectangularBinning(3)) isa TransferOperatorRectangularBinning
+@test transferoperator(Spts, RectangularBinning(3)) isa TransferOperatorRectangularBinning
+@test transferoperator(Mpts, RectangularBinning(3)) isa TransferOperatorRectangularBinning
+@test transferoperator(pts, RectangularBinning(3)) isa TransferOperatorRectangularBinning
+@test transferoperator(Tpts, RectangularBinning(3)) isa TransferOperatorRectangularBinning
 
 @testset "Transfer operator from rectangular binnings" begin
     @testset "Grid approach" begin
