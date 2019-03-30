@@ -179,9 +179,13 @@ function rectangularinvariantmeasure(data::AbstractArray{T, 2},
     binning_scheme::RectangularBinning,
     estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
     kwargs...) where {T <: Real}
-    pts = [data[:, i] for i = 1:maximum(size(data))]
 
-    throw(ArgumentError("`data` must be a vector of vectors, a CustomReconstruction instance or a Dataset instance."))
+    if size(data, 1) > size(data, 2)
+        rectangularinvariantmeasure(Dataset(data), binning_scheme, estimator; kwargs...)
+    else
+        rectangularinvariantmeasure(Dataset(transpose(data)), binning_scheme, estimator; 
+            kwargs...)
+    end
 end
  
 
