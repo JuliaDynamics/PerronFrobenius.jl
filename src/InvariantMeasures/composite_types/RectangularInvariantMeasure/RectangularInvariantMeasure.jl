@@ -119,7 +119,7 @@ function rectangularinvariantmeasure end
 
 
 function rectangularinvariantmeasure(data::Vector{T},
-        binning_scheme,
+        binning_scheme::RectangularBinning,
         estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
         kwargs...) where {T <: Union{Vector, SVector, MVector}}
 
@@ -158,8 +158,16 @@ function rectangularinvariantmeasure(data::Vector{T},
     end
 end
 
+function rectangularinvariantmeasure(data::Dataset,
+    ϵ::RectangularBinning,
+    estimator = :TransferOperatorEstimatorRectangularBinning;
+    kwargs...)
+
+    rectangularinvariantmeasure(data.data, ϵ, estimator, kwargs...)
+end 
+
 function rectangularinvariantmeasure(data::AbstractArray{T, 2},
-    binning_scheme,
+    binning_scheme::RectangularBinning,
     estimator::Symbol = :TransferOperatorEstimatorRectangularBinning;
     kwargs...) where {T <: Real}
     pts = [data[:, i] for i = 1:maximum(size(data))]
@@ -168,7 +176,7 @@ function rectangularinvariantmeasure(data::AbstractArray{T, 2},
 end
  
 function rectangularinvariantmeasure(data::Embeddings.AbstractEmbedding,
-    ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+    ϵ::RectangularBinning,
     estimator = :TransferOperatorEstimatorRectangularBinning;
     kwargs...)
 
@@ -213,34 +221,11 @@ end
  =#
 
 function summarise(invm::RectangularInvariantMeasure)
-    #@show invm
     D = size(invm.points, 1)
     npoints = size(invm.points, 2)
     unique_states_visited = length(unique(invm.encoded_points))
-    #points_str = "  points: $npoints $D-dimensional points\n"
-
-    # Discretization
     ϵ = invm.binning_scheme
-    #ϵ_abs = invm.edgelengths
-
-    #ϵ_str = "  binning_scheme: $ϵ\n"
-    #ϵ_abs_str = "  edgelengths: $ϵ_abs\n"
-
-    #n_visited_bins = size(unique(invm.visited_bins_inds, dims = 2), 2)
-    #coord_minima = tuple(minimum(invm.visited_bins_coordinates, dims = 2)...,)
-    #coord_maxima = tuple(maximum(invm.visited_bins_coordinates, dims = 2)...,)
-
-    #inds_str = "  visited_bins_inds: $n_visited_bins unique bins (rectangular boxes) are visited by the points\n"
-    #coords_str = "  visited_bins_coords: Bins are distributed within the hypercube enclosing \n\tx_{min} =$coord_minima to \n\tx_{max} = $coord_maxima\n"
-    #bv = invm.binvisits
-    #binvisits_str = "  binvisits: $bv"
-
-    #TO = invm.transfermatrix
-    #iv = invm.measure
-    #transfermatrix_str = "  transfermatrix: $TO"
-    #measure_str = "  measure: $iv"
-    #return join(["RectangularInvariantMeasure\n", points_str, ϵ_str, ϵ_abs_str, inds_str, coords_str,
-    #            binvisits_str, transfermatrix_str, measure_str])
+    
     return join([typeof(invm), "from $npoints $D-dimensional points visiting $unique_states_visited unique states in the partition formed by the binning scheme $ϵ"]) 
 end
 

@@ -1,3 +1,9 @@
+## Release 0.5.0
+
+### Breaking changes
+- `rectangularinvariantemeasure` now always needs an instance of `RectangularBinning` to 
+    specify the binning scheme.
+
 ## Release 0.4.0
 
 ### New functionality

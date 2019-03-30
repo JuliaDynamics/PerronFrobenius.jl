@@ -60,7 +60,7 @@ end
 function invariantmeasure(data, binning_scheme::RectangularBinning; kwargs...)
     rectangularinvariantmeasure(
         data, 
-        binning_scheme.ϵ, 
+        binning_scheme, 
         kwargs...)
 end
 
