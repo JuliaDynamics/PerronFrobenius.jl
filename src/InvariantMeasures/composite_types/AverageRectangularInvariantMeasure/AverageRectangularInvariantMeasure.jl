@@ -92,15 +92,12 @@ This constructor returns an `AverageRectangularInvariantMeasure` instance.
 
 - **`points`**: The points for which to estimate the invariant measure.
 
-- **`ϵF`**: The final resolution at which to induce the measure. Must
-    1. `ϵ::Int` divides each axis into `ϵ` intervals of the same size.
-    2. `ϵ::Float` divides each axis into intervals of size `ϵ`.
-    3. `ϵ::Vector{Int}` divides the i-th axis into `ϵᵢ` intervals of the same size.
-    4. `ϵ::Vector{Float64}` divides the i-th axis into intervals of size `ϵᵢ`.
+- **`ϵF`**: The final resolution at which to induce the measure. Must be a valid 
+    `RectangularBinning` instances. See docs for `RectangularBinning` for details.
 
 - **`ϵs`**: The multiple resolutions from which the measure at resolution `ϵF`
-    is induced. Must be an iterable of valid `ϵ` (see the `ϵF` argument for
-    details).
+    is induced. Must be an iterable of valid `RectangularBinning` instances.
+    See docs for `RectangularBinning` for details.
 """
 function averagerectangularinvariantmeasure(points::AbstractArray{T, 2}, 
         ϵF::RectangularBinning, 

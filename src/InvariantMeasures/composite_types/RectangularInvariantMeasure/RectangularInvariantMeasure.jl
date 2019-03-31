@@ -36,13 +36,11 @@ discretized state space.
 - **`points::AbstractArray{T, 2}`**: The points for which to estimate the invariant measure.
     Each column is a point.
 
-- **`ϵ`**: The binning scheme. The following `ϵ` are valid:
-        1. `ϵ::Int` divides each axis into `ϵ` intervals of the same size.
-        2. `ϵ::Float` divides each axis into intervals of size `ϵ`.
-        3. `ϵ::Vector{Int}` divides the i-th axis into `ϵᵢ` intervals of the same size.
-        4. `ϵ::Vector{Float64}` divides the i-th axis into intervals of size `ϵᵢ`.
+- **`binning_scheme`**: The binning scheme. See docs for `RectangularBinning` for details.
 
-- **`ϵ_absolute`**: `ϵ` converted to absolute edge lengths.
+- **`axisminima`**: The minima along each axis.
+
+- **`edgelengths`**: `ϵ` converted to absolute edge lengths.
 
 - **`visited_bins_inds::AbstractArray{Int,2}`**: Counting from the start of each
     coordinate axis in steps dictated by `ϵ`, which bins do each
@@ -79,14 +77,14 @@ end
 
 """
     rectangularinvariantmeasure(data,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+        binning_scheme::RectangularBinning,
         estimator = TransferOperatorEstimatorRectangularBinning;
         kwargs...)
 
 Estimate the invariant measure from a rectangular partition of `data`.
 
 This is done by discretizing the state space into rectangular bins with
-edge lengths dictated by the binning scheme `ϵ`. We then approximate the
+edge lengths dictated by the `binning_scheme`. We then approximate the
 transfer operator over the discretized state space, and compute the
 invariant measure over the bins from the transfer operator.
 
@@ -102,11 +100,8 @@ Returns a `RectangularInvariantMeasure` instance.
     - `Vector{SVector{D, T}}`
     - `Vector{MVector{D, T}}`
 
-- **`ϵ`**: The binning scheme. The following `ϵ` are valid:
-    - `ϵ::Int` divides each axis into `ϵ` intervals of the same size.
-    - `ϵ::Float64` divides each axis into intervals of size `ϵ`.
-    - `ϵ::Vector{Int}` divides the i-th axis into `ϵᵢ` intervals of the same size.
-    - `ϵ::Vector{Float64}` divides the i-th axis into intervals of size `ϵᵢ`.
+- **`binning_scheme`**: A valid `RectangularBinning` instance. See docs for 
+    `RectangularBinning` for details.
 
 - **`estimator`**: A transfer operator estimator yielding a
     `TransferOperatorRectangularBinning`. Defaults to
@@ -159,20 +154,20 @@ function rectangularinvariantmeasure(data::Vector{T},
 end
 
 function rectangularinvariantmeasure(data::Dataset,
-    ϵ::RectangularBinning,
+    binning_scheme::RectangularBinning,
     estimator = :TransferOperatorEstimatorRectangularBinning;
     kwargs...)
 
-    rectangularinvariantmeasure(data.data, ϵ, estimator, kwargs...)
+    rectangularinvariantmeasure(data.data, binning_scheme, estimator, kwargs...)
 end 
 
 
 function rectangularinvariantmeasure(data::CustomReconstruction,
-    ϵ::RectangularBinning,
+    binning_scheme::RectangularBinning,
     estimator = :TransferOperatorEstimatorRectangularBinning;
     kwargs...)
 
-    rectangularinvariantmeasure(data.reconstructed_pts, ϵ, estimator, kwargs...)
+    rectangularinvariantmeasure(data.reconstructed_pts, binning_scheme, estimator, kwargs...)
 end 
 
 function rectangularinvariantmeasure(data::AbstractArray{T, 2},
