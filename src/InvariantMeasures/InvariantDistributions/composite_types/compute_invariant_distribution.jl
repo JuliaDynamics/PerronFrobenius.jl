@@ -3,9 +3,9 @@ import DelayEmbeddings.Dataset
 import ..InvariantMeasures:
     TransferOperatorEstimatorRectangularBinning,
     TransferOperatorRectangularBinning
-import CausalityToolsBase: encode, get_minima_and_edgelengths
+import CausalityToolsBase: encode, get_minima_and_edgelengths, RectangularBinning
 
-function invariantmeasure(data, ϵ,
+function invariantmeasure(data, ϵ::RectangularBinning,
         estimator = :TransferOperatorEstimatorRectangularBinning;
         kwargs...) where T
     
@@ -27,7 +27,7 @@ function invariantmeasure(data, ϵ,
 end
 
 function invariantmeasure(data::StateSpaceReconstruction.AbstractEmbedding,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+        ϵ::RectangularBinning,
         estimator = :TransferOperatorEstimatorRectangularBinning;
         kwargs...)
 
@@ -35,7 +35,7 @@ function invariantmeasure(data::StateSpaceReconstruction.AbstractEmbedding,
 end
 
 function invariantmeasure(data::Dataset,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+        ϵ::RectangularBinning,
         estimator = :TransferOperatorEstimatorRectangularBinning;
         kwargs...)
 
@@ -65,19 +65,10 @@ Returns an [`InvariantDistribution`](@ref) instance.
     - `Dataset` instances from `DynamicalSystems.jl`/`DelayEmbeddings.jl`.
     - `AbstractEmbedding` subtypes from `StateSpaceReconstruction.jl`.
     - `AbstractArray{T, 2}` instances where each column represents a point.
-- **`ϵ`**: The binning scheme. The following `ϵ` are valid:
-    - `ϵ::Int` divides each axis into `ϵ` intervals of the same size.
-    - `ϵ::Float64` divides each axis into intervals of size `ϵ`.
-    - `ϵ::Vector{Int}` divides the i-th axis into `ϵᵢ` intervals of the same size.
-    - `ϵ::Vector{Float64}` divides the i-th axis into intervals of size `ϵᵢ`.
-- **`estimator`**: A transfer operator estimator yielding a
-    `PerronFrobenius.TransferOperatorRectangularBinning`. Defaults to
-     `:TransferOperatorEstimatorRectangularBinning`.
-- **`kwargs`**: Keyword arguments when calling `invariantmeasure` on the
-    transfer operator.
+- **`ϵ`**: A valid `RectangularBinning` binning scheme.
 """
 function invariantmeasure(data,
-        ϵ::Union{Int, Float64, Vector{Int}, Vector{Float64}},
+        ϵ::RectangularBinning,
         estimator::Symbol; kwargs...)
     invariantmeasure(data, ϵ, estimator, kwargs...)
 end

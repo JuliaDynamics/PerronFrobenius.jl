@@ -13,12 +13,12 @@ import DelayEmbeddings: Dataset
 import CausalityToolsBase: get_minima_and_edgelengths, encode
 
 """ 
-    transferoperator(points, binning_scheme::RectangularBinningScheme; kwargs...)
+    transferoperator(points, binning_scheme::RectangularBinning; kwargs...)
 
 Discretize `points` using the provided `binning_scheme` and compute the transfer operator 
 over the partition elements. 
 """ 
-function transferoperator(points, binning_scheme::RectangularBinningScheme; kwargs...) end
+function transferoperator(points, binning_scheme::RectangularBinning; kwargs...) end
 
 ######################## 
 # Triangulation binnings
