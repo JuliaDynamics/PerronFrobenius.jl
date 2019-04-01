@@ -3,7 +3,7 @@ __precompile__(true)
 module PerronFrobenius
 
 using Reexport
-using CausalityToolsBase
+@reexport using CausalityToolsBase
 using StateSpaceReconstruction
 
 import StateSpaceReconstruction:
