@@ -17,6 +17,20 @@ import CausalityToolsBase: get_minima_and_edgelengths, encode
 
 Discretize `points` using the provided `binning_scheme` and compute the transfer operator 
 over the partition elements. 
+
+
+# Example
+
+Assume we have enough points that a rectangular partition yields a good estimate of the 
+invariant measure. Then the transfer operator over the partition can be computed as follows.
+
+```julia 
+pts = [rand(3) for i = 1:2000]
+
+# Use rectangular boxes constructed by subdividing each coordinate 
+# axis into 10 subintervals of equal length.
+transferoperator(pts, RectangularBinning(10))
+```
 """ 
 function transferoperator(points, binning_scheme::RectangularBinning; kwargs...) end
 
@@ -24,7 +38,8 @@ function transferoperator(points, binning_scheme::RectangularBinning; kwargs...)
 # Triangulation binnings
 ######################## 
 """
-    transferoperator(pts, ϵ::TriangulationBinning, simplex_intersection_type::ApproximateIntersection; 
+    transferoperator(pts, ϵ::TriangulationBinning, 
+        simplex_intersection_type::ApproximateIntersection; 
         n::Int = 200, sample_randomly::Bool = false) -> TransferOperatorTriangulationApprox
 
 Estimate the invariant measure over the state space defined by `pts` using a triangulation 
@@ -36,8 +51,16 @@ sampled with, and `sample_randomly` indicates whether points used be sampled ran
 within each simpled (`sample_randomly = true`) or by a regular simplex splitting routine 
 (`sample_randomly = false`, which is default).
 
-Example: If `pts = [rand(3) for i = 1:30`], then run
-`transferoperator(pts, TriangulationBinning(), ApproximateIntersection())`. 
+# Example
+
+Assume we have sufficiently few points that a triangulation approach involving simplex 
+intersections is computationally feasible to compute the invariant measure. Then 
+a transfer operator can be computed as follows.
+
+```julia 
+pts = [rand(3) for i = 1:30]
+transferoperator(pts, TriangulationBinning(), ApproximateIntersection())
+```
 """
 function transferoperator(pts, ϵ::TriangulationBinning, 
         simplex_intersection_type::ApproximateIntersection; 
@@ -49,7 +72,6 @@ function transferoperator(pts, ϵ::TriangulationBinning,
 end
 
 
-
 """
     transferoperator(pts, ϵ::TriangulationBinning, 
         simplex_intersection_type::ExactIntersection) -> TransferOperatorTriangulationExact
@@ -58,8 +80,16 @@ Estimate the invariant measure over the state space defined by `pts` using a tri
 of the phase space as the partition, using exact simplex intersections to compute transition
 probabilities between the states (simplices).
 
-Example: If `pts = [rand(3) for i = 1:30`], then run
-`transferoperator(pts, TriangulationBinning(), ExactIntersection())`. 
+# Example
+
+Assume we have sufficiently few points that a triangulation approach involving simplex 
+intersections is computationally feasible to compute the invariant measure. Then 
+a transfer operator can be computed as follows.
+
+```julia 
+pts = [rand(3) for i = 1:30]
+transferoperator(pts, TriangulationBinning(), ExactIntersection())
+```
 """
 function transferoperator(pts, ϵ::TriangulationBinning, 
         simplex_intersection_type::ExactIntersection)
@@ -105,8 +135,6 @@ function transferoperator(points::AbstractArray{T, 2}, binning_scheme::Rectangul
     # point of the embedding visits.
     mini, edgelengths = get_minima_and_edgelengths(pts, binning_scheme)
     encoded_pts = encode(pts, mini, edgelengths)
-
-    #visited_bins = assign_bin_labels(points, binning_scheme.ϵ)
 
     # Which are the visited bins, which points
     # visits which bin, repetitions, etc...
