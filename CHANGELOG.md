@@ -1,3 +1,9 @@
+## Release 0.6.0
+
+- Rectangular binning schemes must now be explicitly specified (not inferred from numeric type). 
+- Documentation fixes.
+- Added more examples to doc strings.
+
 ## Release 0.5.2
 
 - Require newest StateSpaceReconstruction.jl version, so that invariantizing works properly after PyCall syntax update.
