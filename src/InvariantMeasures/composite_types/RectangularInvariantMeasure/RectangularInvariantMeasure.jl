@@ -199,7 +199,7 @@ function summarise(invm::RectangularInvariantMeasure)
     unique_states_visited = length(unique(invm.encoded_points))
     ϵ = invm.binning_scheme
     
-    return join([typeof(invm), "from $npoints $D-dimensional points visiting $unique_states_visited unique states in the partition formed by the binning scheme $ϵ"]) 
+    return join([typeof(invm), " from $npoints $D-dimensional points visiting $unique_states_visited unique states in the partition formed by the binning scheme $ϵ"]) 
 end
 
 Base.show(io::IO, invm::RectangularInvariantMeasure) = println(io, summarise(invm))
