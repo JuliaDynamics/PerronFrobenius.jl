@@ -1,6 +1,9 @@
 ## Release 0.6.0
 
+### Breaking changes
 - Rectangular binning schemes must now be explicitly specified (not inferred from numeric type). 
+
+### Improvements
 - Documentation fixes.
 - Added more examples to doc strings.
 
