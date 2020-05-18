@@ -1,7 +1,4 @@
-import StateSpaceReconstruction:
-	GroupSlices.groupslices,
-    GroupSlices.firstinds,
-    GroupSlices.groupinds
+using GroupSlices
 
 """
     BinVisits
@@ -93,8 +90,4 @@ function get_binvisits(visited_bin_labels::Array{Int, 2})
     BinVisits(first_visited_by, visitors, visits_whichbin)
 end
 
-get_binvisits(points::Vector{Vector{T}}) where T = get_binvisits(hcat(points...,))
-
-export
-BinVisits,
-get_binvisits
+get_binvisits(points::Vector{T}) where T <: AbstractVector = get_binvisits(hcat(points...,))

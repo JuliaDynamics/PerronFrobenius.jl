@@ -1,83 +1,83 @@
-include("organize_binvisits.jl")
+export Grid
+using CausalityToolsBase
+using SparseArrays
 
-import ..TransferOperatorRectangularBinning
+include("v1/binvisits.jl")
+
+# TODO: add projected boundary condition?
+function isboundarycondition(bc)
+    bc ∈ ["circular", "random"]
+end
+
 """
-    estimate_transferoperator_from_binvisits(bv::BinVisits;
-                allocate_frac = 1,
-                boundary_condition = :none)
+    Grid(b::BinningScheme, bc::String = "none", f::Real = 1.0) <: TransferOperatorEstimator
 
-Estimate transfer operator from information about which bin
-gets visited by which points of the orbit.
-
-## Transition probabilities
-To determine the transition probabilities, we pre-allocate two index vectors
-(`I` and `J`) and a probability vector (`P`). After the transition probabilities
-have been determined, the vectors are combined into a sparse matrix (the
-transfer matrix), which typically have very few nonzero entries (often only a
-few percent).
-
-## Memory allocation
-To not allocate too much memory, `allocate_frac` controls what fraction of the
-total number of possible transitions (``n_{states}^2``) we pre-allocate for.
-
-## Example usage
-
-```
-# Random orbit.
-orbit = rand(1000, 3)
-x, y, z = orbit[:, 1], orbit[:, 2], orbit[:, 3]
-
-# Embedding E = {(y(t+1), y(t), x(t))}
-js = (2, 2, 1)
-τs = (1, 0, 0)
-E = genembed([x, y], τs, js);
-
-# Which bin sizes to use along each dimension?
-ϵ = [.4, .2, .4]
-
-# Identify which bins of the partition resulting
-# from using ϵ each point of the embedding visits.
-visited_bins = assign_bin_labels(E, ϵ)
-
-# Which are the visited bins, which points
-# visits which bin, repetitions, etc...
-binvisits = get_binvisits(visited_bins)
-
-# Use that information to estimate transfer operator
-TO = transferoperator(binvisits)
-
-# Verify that TO is Markov (NB. last row might be zero!,
-# then this test might fail)
-all(sum(TO, 2) .≈ 1)
-```
+A simple grid estimator for approximating the transfer operator. 
+`bc` is the boundary condition, and `f` is the allocation factor.
 """
-function estimate_transferoperator_from_binvisits(bv::BinVisits;
-                allocate_frac = 1.0,
-                boundary_condition = :none)
+struct Grid{B <: BinningScheme} <: TransferOperator
+    b::B
+    bc::String
+    f::Real
+     
+    function Grid(b::B, bc::String = "circular", f::Real = 1.0) where B
+        isboundarycondition(bc)  || error("Boundary condition '$bc' not valid.")
+        new{B}(b, bc, f)
+    end
+end
+Base.show(io::IO, g::Grid) = print(io, "Grid{$(g.b)}")
 
-    valid_boundary_conditions = [:none, :exclude, :circular, :invariantize]
-    if !(boundary_condition ∈ valid_boundary_conditions)
-        error("Boundary condition $boundary_condition not valid.")
+
+function transferoperatorgenerator(pts, method::Grid)
+    b = method.b
+    
+    # Calculate minima and edgelengths given the chosen grid
+    mini, el = get_minima_and_edgelengths(pts, b)
+    
+    # Tie points to grid cells using integer tuples
+    encoded_pts = encode(pts, mini, el)
+    
+    # Coordinates of the visited bins relative to grid.
+    vb = [el .* pt .+ mini for pt in encoded_pts]
+    
+    # TODO: this is the expensive operation. Speed ups possible by 
+    # making versions of the groupslice functions that operate on 
+    # integers tuples instead of this matrix of integers?
+    bv = get_binvisits(hcat(encoded_pts...,))
+    
+    init = (vb = vb, bv = bv)
+    TransferOperatorGenerator(method, pts, init)
+end
+
+
+Base.show(io::IO, g::TransferOperatorGenerator) = print(io, "TransferOperatorGenerator{$(g.method)}")
+
+# Stricly speaking, for the single-grid estimator, making a generator is not necessary.
+# However, follow the conventions for the rest of the estimators and use it.
+function (tog::TransferOperatorGenerator{<:Grid})(bc)
+    boundary_condition = tog.method.bc
+
+    alloc_frac = tog.method.f
+    if !(0 < alloc_frac <= 1)
+        error("allocation fraction needs to be on the interval (0, 1]")
     end
 
-    if !(0 < allocate_frac <= 1)
-        error("allocate_frac needs to be on the interval (0, 1]")
-    end
-
+    bv, vb = getfield.(Ref(tog.init), (:bv, :vb))
     first_visited_by = bv.first_visited_by
     visitors = bv.visitors
     visits_whichbin = bv.visits_whichbin
-    n_visited_bins = length(first_visited_by)
+    n_visited = length(first_visited_by)
+    valid_boundary_conditions = [:none, :exclude, :circular, :invariantize]
 
 
     # Initialise transfer (Perron-Frobenius) operator as a sparse matrix
     # (keep track of indices and values in separate columns for now)
-    n_possible_nonzero_entries = n_visited_bins^2
-    N = ceil(Int, n_possible_nonzero_entries / allocate_frac)
+    n_possible_nonzero_entries = n_visited^2
+    N = ceil(Int, n_possible_nonzero_entries / alloc_frac)
 
-    I = zeros(Int32, N)
-    J = zeros(Int32, N)
-    P = zeros(Float64, N)
+    I = zeros(Int, N)
+    J = zeros(Int, N)
+    P = zeros(N)
 
     # Preallocate target index for the case where there is only
     # one point of the orbit visiting a bin.
@@ -85,18 +85,16 @@ function estimate_transferoperator_from_binvisits(bv::BinVisits;
     n_visitsᵢ::Int = 0
 
     # Keep track of how many transitions we've considered.
-    transition_counter = 0
+    k = 0
 
-    if boundary_condition == :circular
-        #warn("Using circular boundary condition")
+    if boundary_condition == "circular"
         append!(visits_whichbin, [1])
-    elseif boundary_condition == :random
-        #warn("Using random circular boundary condition")
-		append!(visits_whichbin, [rand(1:length(visits_whichbin))])
-	end
+    elseif boundary_condition == "random"
+        append!(visits_whichbin, [rand(1:length(visits_whichbin))])
+    end
 
     # Loop over the visited bins bᵢ
-    for i in 1:n_visited_bins
+    for i in 1:n_visited
         # How many times is this bin visited?
         n_visitsᵢ = length(visitors[i])
 
@@ -105,16 +103,15 @@ function estimate_transferoperator_from_binvisits(bv::BinVisits;
         # it happens to be the last, we skip it, because we don't know its
         # image.
         if n_visitsᵢ == 1 && !(i == visits_whichbin[end])
-            transition_counter += 1
-            # To which bin does the single point visiting bᵢ jump if we
-            # shift it one time step ahead along its orbit?
+            k += 1
+            # To which bin does the single point visiting bᵢ jump if we shift it one time step ahead along its orbit?
             target_bin_j = visits_whichbin[visitors[i][1] + 1][1]
 
             # We now know that exactly one point (the i-th) does the
             # transition from i to the target j.
-            I[transition_counter] = i
-            J[transition_counter] = target_bin_j
-            P[transition_counter] = 1
+            I[k] = i
+            J[k] = target_bin_j
+            P[k] = 1
         end
         # If more than one point of the orbit visits the i-th bin, we
         # identify the visiting points and track which bins bⱼ they end up
@@ -147,10 +144,10 @@ function estimate_transferoperator_from_binvisits(bv::BinVisits;
             for j in 1:length(unique_target_bins)
                 n_transitions_i_to_j = sum(target_bins .== unique_target_bins[j])
 
-                transition_counter += 1
-                I[transition_counter] = i
-                J[transition_counter] = unique_target_bins[j]
-                P[transition_counter] = n_transitions_i_to_j / n_visitsᵢ
+                k += 1
+                I[k] = i
+                J[k] = unique_target_bins[j]
+                P[k] = n_transitions_i_to_j / n_visitsᵢ
             end
         end
     end
@@ -159,11 +156,8 @@ function estimate_transferoperator_from_binvisits(bv::BinVisits;
     # Frobenius operator (transfer operator). Filter out the nonzero entries.
     # The number of rows in the matrix is given by the number of unique points
     # we have in the embedding.
-    TO = Array(sparse(I[1:transition_counter],
-                J[1:transition_counter],
-                P[1:transition_counter],
-                n_visited_bins, n_visited_bins))
-
+    TO = Array(sparse(I[1:k], J[1:k], P[1:k], n_visited, n_visited))
+    
     # There may be boxes which are visited by points of the orbit, but not by
     # any image points.
     # zc = zerocols(TO)
@@ -182,6 +176,16 @@ function estimate_transferoperator_from_binvisits(bv::BinVisits;
     #     i = zc[1]
     #     TO[i, 1] = 1.0
     # end
+end
 
-    TransferOperatorRectangularBinning(TO)
+"""
+    transferoperator(pts, method::Grid, bc::String)
+
+Compute the transfer operator from the phase/state space `points`,
+using boundary condition `bc` ("circular" or "random"), over a
+rectangular partition of the state space.
+"""
+function transferoperator(pts, method::Grid, bc::String = "circular")
+    tog = transferoperatorgenerator(pts, method)
+    tog(bc)
 end

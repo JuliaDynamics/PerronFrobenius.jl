@@ -15,7 +15,7 @@ import DelayEmbeddings:
 import StaticArrays:
     SVector, MVector
 
-import CausalityToolsBase: get_minima_and_edgelengths, encode, RectangularBinning, RectangularBinningScheme, CustomReconstruction
+import CausalityToolsBase: get_minima_and_edgelengths, encode, RectangularBinning, RectangularBinningScheme
 
 
 export RectangularInvariantMeasure, rectangularinvariantmeasure
@@ -161,14 +161,6 @@ function rectangularinvariantmeasure(data::Dataset,
     rectangularinvariantmeasure(data.data, binning_scheme, estimator, kwargs...)
 end 
 
-
-function rectangularinvariantmeasure(data::CustomReconstruction,
-    binning_scheme::RectangularBinning,
-    estimator = :TransferOperatorEstimatorRectangularBinning;
-    kwargs...)
-
-    rectangularinvariantmeasure(data.reconstructed_pts, binning_scheme, estimator, kwargs...)
-end 
 
 function rectangularinvariantmeasure(data::AbstractArray{T, 2},
     binning_scheme::RectangularBinning,

@@ -1,40 +1,43 @@
-__precompile__(true)
+#__precompile__(true)
 
 module PerronFrobenius
 
-using Reexport
-@reexport using CausalityToolsBase
-using StateSpaceReconstruction
+include("v1/binvisits.jl")
+include("v1/api.jl")
+include("v1/Grid.jl")
 
-import StateSpaceReconstruction:
-    GroupSlices,
-    Embeddings.AbstractEmbedding,
-    DelaunayTriangulation,
-    cembed,
-    invariantize
+#using Reexport
+#@reexport using CausalityToolsBase
+
+#import StateSpaceReconstruction:
+#    GroupSlices,
+#    Embeddings.AbstractEmbedding,
+#    DelaunayTriangulation,
+#    cembed,
+#    invariantize
 
 
-import Simplices:
-    subsample_coeffs,
-    simplexintersection
+#import Simplices:
+#    subsample_coeffs,
+#    simplexintersection
 
-using Distributed
-using SharedArrays
-using StaticArrays
-using SparseArrays
-using InplaceOps
-using RecipesBase
-using Printf
-using LinearAlgebra
-using DelayEmbeddings
+#using Distributed
+#using SharedArrays
+#using StaticArrays
+#using SparseArrays
+#using InplaceOps
+#using RecipesBase
+#using Printf
+#using LinearAlgebra
+#using DelayEmbeddings
 
 # Abstract estimator type
-abstract type TransferOperatorEstimator end
+#abstract type TransferOperatorEstimator end
 
-include("BinningSchemes/BinningSchemes.jl")
-include("TransferOperators/TransferOperators.jl")
-include("InvariantMeasures/InvariantMeasures.jl")
+#include("BinningSchemes/BinningSchemes.jl")
+#include("TransferOperators/TransferOperators.jl")
+#include("InvariantMeasures/InvariantMeasures.jl")
 
-include("is_markov.jl")
+#include("is_markov.jl")
 
 end
