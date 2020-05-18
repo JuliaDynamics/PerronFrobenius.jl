@@ -2,12 +2,8 @@ export Grid
 using CausalityToolsBase
 using SparseArrays
 
-include("v1/binvisits.jl")
+include("binvisits.jl")
 
-# TODO: add projected boundary condition?
-function isboundarycondition(bc)
-    bc ∈ ["circular", "random"]
-end
 
 """
     Grid(b::BinningScheme, bc::String = "none", f::Real = 1.0) <: TransferOperatorEstimator
@@ -21,7 +17,7 @@ struct Grid{B <: BinningScheme} <: TransferOperator
     f::Real
      
     function Grid(b::B, bc::String = "circular", f::Real = 1.0) where B
-        isboundarycondition(bc)  || error("Boundary condition '$bc' not valid.")
+        isboundarycondition(bc, "grid")  || error("Boundary condition '$bc' not valid.")
         new{B}(b, bc, f)
     end
 end

@@ -2,9 +2,13 @@
 
 module PerronFrobenius
 
-include("v1/binvisits.jl")
 include("v1/api.jl")
-include("v1/Grid.jl")
+include("v1/triangulationestimators/common.jl")
+
+include("v1/gridestimators/Grid.jl")
+
+include("v1/triangulationestimators/simplex_stuff.jl")
+include("v1/triangulationestimators/exact/SimplexExact.jl")
 
 #using Reexport
 #@reexport using CausalityToolsBase

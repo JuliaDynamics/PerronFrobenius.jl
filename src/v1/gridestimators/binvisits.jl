@@ -8,22 +8,21 @@ get visited by the orbit.
 
 ## Fields
 
-`first_visited_by`: Vector with the same length as there are visited bins.
-`first_visited_by[i]` identifies which point of the orbit first visits the
-i-th bin. If `first_visited_by[i] = 5`, then the i-th bin first got visited
-by the 5th point of the orbit.
+- **`first_visited_by`**: Vector with the same length as there are visited bins.
+    `first_visited_by[i]` identifies which point of the orbit first visits the
+    i-th bin. If `first_visited_by[i] = 5`, then the i-th bin first got visited
+    by the 5th point of the orbit.
 
-`visitors`. Vector with same length as there are visited bins.
-`visitors[i]` will give a vector containing  the (column)
-indices of the points visiting that bin. If `visitors[i] = [4, 12]`,
-then the i-th bin was visited by points #4 and #12 of the embedding.
+- **`visitors`**. Vector with same length as there are visited bins.
+    `visitors[i]` will give a vector containing  the (column)
+    indices of the points visiting that bin. If `visitors[i] = [4, 12]`,
+    then the i-th bin was visited by points #4 and #12 of the embedding.
 
-`visits_whichbin`: Vector with same length as there are number of points.
-Each element of this vector indicate which bin the corresponding
-point visits (expressed in terms of the unique bin labels).
-If `visits_whichbin[i] = 5`, then the i-th point of the orbit
-visits the 5th visited bin.
-
+- **`visits_whichbin`: Vector with same length as there are number of points.
+    Each element of this vector indicate which bin the corresponding
+    point visits (expressed in terms of the unique bin labels).
+    If `visits_whichbin[i] = 5`, then the i-th point of the orbit
+    visits the 5th visited bin.
 """
 struct BinVisits
     first_visited_by::Vector{Int}

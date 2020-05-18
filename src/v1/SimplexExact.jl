@@ -1,1 +1,0 @@
-struct SimplexExact <: TransferOperator end
