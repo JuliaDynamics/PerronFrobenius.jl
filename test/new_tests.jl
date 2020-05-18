@@ -1,5 +1,6 @@
 using CausalityToolsBase
-using PerronFrobenius
+using PerronFrobenius 
+using DelayEmbeddings
 
 # Grid estimator
 @test Grid(RectangularBinning(5)) isa Grid
@@ -16,5 +17,5 @@ D = genembed(x, τs, js)
 tog = transferoperatorgenerator(D, SimplexExact())
 M = tog()
 
-@test tog isa TransferOperatorGenerator
+@test tog isa PerronFrobenius.TransferOperatorGenerator
 @test all(sum(M, dims = 2) .≈ 1.0)
