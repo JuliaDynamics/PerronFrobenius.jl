@@ -1,19 +1,5 @@
 import DelayEmbeddings: AbstractDataset 
 
-#include("MutableSimplex.jl")
-
-# TODO: add projected boundary condition for grid esto,atpr?
-
-function isboundarycondition(bc, method::String)
-    if method == "grid"
-        bc ∈ ["circular", "random"]
-    elseif method ∈ ["triangulation"]
-        bc ∈ ["circular", "random"]
-    else
-        error("method $method not defined")
-    end
-end
-
 function invariantize(pts::AbstractDataset, bc = "circular")
     invariant_pts = copy(pts.data)
     if bc == "circular"

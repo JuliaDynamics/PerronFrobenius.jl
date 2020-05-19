@@ -1,0 +1,5 @@
+[deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Simplices = "d5428e67-3037-59ba-9ab1-57a04f0a3b6a"
+CausalityToolsBase = "b1f25513-c649-51ee-8a1c-0e98d01ae897"
+DelayEmbeddings = "5732040d-69e3-5649-938a-b6b4f237613f"

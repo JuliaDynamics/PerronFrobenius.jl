@@ -1,4 +1,5 @@
-export Grid
+export SingleGrid
+
 using CausalityToolsBase
 using SparseArrays
 
@@ -6,25 +7,25 @@ include("binvisits.jl")
 
 
 """
-    Grid(b::BinningScheme, bc::String = "none", f::Real = 1.0) <: TransferOperatorEstimator
+    SingleGrid(b::BinningScheme, bc::String = "none", f::Real = 1.0) <: TransferOperatorEstimator
 
-A simple grid estimator for approximating the transfer operator. 
+A simple SingleGrid estimator for approximating the transfer operator. 
 `bc` is the boundary condition, and `f` is the allocation factor.
 """
-struct Grid{B <: BinningScheme} <: TransferOperator
+struct SingleGrid{B <: BinningScheme} <: TransferOperator
     b::B
     bc::String
     f::Real
      
-    function Grid(b::B, bc::String = "circular", f::Real = 1.0) where B
+    function SingleGrid(b::B, bc::String = "circular", f::Real = 1.0) where B <: BinningScheme
         isboundarycondition(bc, "grid")  || error("Boundary condition '$bc' not valid.")
         new{B}(b, bc, f)
     end
 end
-Base.show(io::IO, g::Grid) = print(io, "Grid{$(g.b)}")
+Base.show(io::IO, g::SingleGrid) = print(io, "SingleGrid{$(g.b)}")
 
 
-function transferoperatorgenerator(pts, method::Grid)
+function transferoperatorgenerator(pts, method::SingleGrid)
     b = method.b
     
     # Calculate minima and edgelengths given the chosen grid
@@ -50,7 +51,7 @@ Base.show(io::IO, g::TransferOperatorGenerator) = print(io, "TransferOperatorGen
 
 # Stricly speaking, for the single-grid estimator, making a generator is not necessary.
 # However, follow the conventions for the rest of the estimators and use it.
-function (tog::TransferOperatorGenerator{<:Grid})(bc)
+function (tog::TransferOperatorGenerator{<:SingleGrid})(bc = "circular")
     boundary_condition = tog.method.bc
 
     alloc_frac = tog.method.f
@@ -175,13 +176,13 @@ function (tog::TransferOperatorGenerator{<:Grid})(bc)
 end
 
 """
-    transferoperator(pts, method::Grid, bc::String)
+    transferoperator(pts, method::SingleGrid, bc::String)
 
 Compute the transfer operator from the phase/state space `points`,
 using boundary condition `bc` ("circular" or "random"), over a
 rectangular partition of the state space.
 """
-function transferoperator(pts, method::Grid, bc::String = "circular")
+function transferoperator(pts, method::SingleGrid, bc::String = "circular")
     tog = transferoperatorgenerator(pts, method)
     tog(bc)
 end
