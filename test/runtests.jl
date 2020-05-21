@@ -5,6 +5,7 @@ end
 using Test
 using CausalityToolsBase
 using PerronFrobenius
+using DelayEmbeddings
 
 include("new_tests.jl")
 

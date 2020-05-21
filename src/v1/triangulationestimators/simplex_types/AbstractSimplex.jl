@@ -1,15 +1,16 @@
 export 
     AbstractSimplex, 
     orientation, 
-    ∩, 
     intersect,
     radius,
     volume, 
     centroid
 
 import LinearAlgebra: det 
-import Simplices: orientation, radius, volume, centroid, simplexintersection
-import Base: intersect
+import .Simplices: centroid
+import .Simplices: radius 
+import .Simplices: orientation
+import .Simplices: volume
 
 
 abstract type AbstractSimplex{D, T} end
@@ -55,7 +56,7 @@ nvertices(s::AbstractSimplex) = length(s)
 
 Compute the orientation of a simplex. *Convention: append rows of ones at top of vertex matrix*.
 """
-function orientation(s::AbstractSimplex)
+function Simplices.orientation(s::AbstractSimplex)
     det([ones(1, dimension(s) + 1); s[:, :]])
 end
 
@@ -64,9 +65,9 @@ end
 
 Compute the unscaled volume of the simplex. Divide by factorial(dim) to get the true volume.
 """
-volume(s::AbstractSimplex) = abs(orientation(s))
+Simplices.volume(s::AbstractSimplex) = abs(orientation(s))
 
-function centroid(s::AbstractSimplex)
+function Simplices.centroid(s::AbstractSimplex)
     D = dimension(s)
     # Results in a dim-by-1 matrix, but we just want a vector, so drop the last dimension
     centroid = dropdims(s[:, :] * (ones(D + 1, 1) / (D + 1)), dims = 2)
@@ -77,7 +78,7 @@ end
 
 Compute the radius of a simplex.
 """
-function radius(s::AbstractSimplex)
+function Simplices.radius(s::AbstractSimplex)
     D = dimension(s)
     centroidmatrix = repeat(centroid(s), 1, D + 1)
     radius = sqrt(maximum(ones(1, D) * ((s[:, :] .- centroidmatrix) .^ 2)))
@@ -85,7 +86,7 @@ end
 
 
 function Base.intersect(s1::AbstractSimplex, s2::AbstractSimplex)
-    simplexintersection(s1[:, :], s2[:, :])
+    Simplices.simplexintersection(s1[:, :], s2[:, :])
 end
 
 """

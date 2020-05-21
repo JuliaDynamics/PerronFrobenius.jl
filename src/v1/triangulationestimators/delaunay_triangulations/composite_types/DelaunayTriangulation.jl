@@ -1,7 +1,7 @@
 export DelaunayTriangulation
 
 import StaticArrays: SVector, MVector 
-import Simplices.Delaunay: delaunay
+import .Simplices 
 
 include("addnoise.jl")
 
@@ -13,7 +13,7 @@ struct DelaunayTriangulation <: AbstractDelaunayTriangulation
         if joggle > 0
             addnoise!(vertices; joggle_factor = joggle)
         end
-        simplex_inds = delaunay(vertices)
+        simplex_inds = Simplices.Delaunay.delaunay(vertices)
         new(simplex_inds)
     end
 

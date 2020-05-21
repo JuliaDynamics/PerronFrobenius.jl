@@ -1,29 +1,29 @@
-export SimplexApprox
+export SimplexPoint, transferoperator
 import StaticArrays: SizedVector, SizedMatrix, MMatrix
-
 
 include("helper_functions.jl")
 
-"""
-    SimplexApprox
 
-A transfer operator estimator using a triangulation partition and approximate simplex intersections [^Diego2019]. 
+"""
+    SimplexPoint() <: TransferOperator
+
+A transfer operator estimator using a triangulation partition and approximate simplex intersections[^Diego2019]. 
 
 [^Diego2019]: Diego, David, Kristian Agasøster Haaga, and Bjarte Hannisdal. "Transfer entropy computation using the Perron-Frobenius operator." Physical Review E 99.4 (2019): 042212.
 """
-struct SimplexApprox <: TransferOperator
+struct SimplexPoint <: TransferOperator
     bc::String
     
-    function SimplexApprox(bc::String = "circular")
+    function SimplexPoint(bc::String = "circular")
         isboundarycondition(bc, "triangulation")  || error("Boundary condition '$bc' not valid.")
         new(bc)
     end
 end
-Base.show(io::IO, se::SimplexApprox) = print(io, "SimplexApprox{$(se.bc)}")
+Base.show(io::IO, se::SimplexPoint) = print(io, "SimplexPoint{$(se.bc)}")
 
 
-""" Generate a TransferOperatorGenerator for an exact simplex estimator."""
-function transferoperatorgenerator(pts, method::SimplexApprox)
+""" Generate a transopergenerator for an exact simplex estimator."""
+function transopergenerator(pts, method::SimplexPoint)
     # modified points, where the image of each point is guaranteed to lie within the convex hull of the previous points
     invariant_pts = invariantize(pts)
     
@@ -41,7 +41,7 @@ end
 n: The number of points sampled inside each simplex.
 randomsampling: Sample randomly (`random == true`), or using an even simplex splitting routine (`random == false`)
 """
-function (tog::TransferOperatorGenerator{<:SimplexApprox})(; tol = 1e-8, randomsampling::Bool = false, n::Int = 100)
+function (tog::TransferOperatorGenerator{<:SimplexPoint})(; tol = 1e-8, randomsampling::Bool = false, n::Int = 100)
     pts, inds = getfield.(Ref(tog.init), (:invariant_pts, :triang))
     D = length(pts[1])
     N = length(inds)
@@ -113,6 +113,13 @@ function (tog::TransferOperatorGenerator{<:SimplexApprox})(; tol = 1e-8, randoms
     # Need to normalise, because all we have up until now is counts
     # of how many points inside the image simplex falls into
     # the simplices.
-    return transpose(M) ./ n_coeffs
+    params = (tol = tol, randomsampling = randomsampling, n = n)
+    M_normalized = transpose(M) ./ n_coeffs
+    return TransferOperatorApproximation(tog, M_normalized, params)
 
+end
+
+function transferoperator(pts, method::SimplexPoint; tol = 1e-8, randomsampling::Bool = false, n::Int = 100)
+    tog = transopergenerator(pts, method)
+    tog(tol = tol, randomsampling = randomsampling, n = n)
 end

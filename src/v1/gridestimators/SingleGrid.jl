@@ -5,27 +5,29 @@ using SparseArrays
 
 include("binvisits.jl")
 
-
 """
-    SingleGrid(b::BinningScheme, bc::String = "none", f::Real = 1.0) <: TransferOperatorEstimator
+    SingleGrid(b::RectangularBinning, bc::String = "none", f::Real = 1.0) <: TransferOperator
 
-A simple SingleGrid estimator for approximating the transfer operator. 
+A simple estimator for approximating the transfer operator over a partition dictated by `b`.
 `bc` is the boundary condition, and `f` is the allocation factor.
+
+See also: [`RectangularBinning`](@ref).
 """
-struct SingleGrid{B <: BinningScheme} <: TransferOperator
+struct SingleGrid{B <: RectangularBinning} <: TransferOperator
     b::B
     bc::String
     f::Real
      
-    function SingleGrid(b::B, bc::String = "circular", f::Real = 1.0) where B <: BinningScheme
+    function SingleGrid(b::B, bc::String = "circular", f::Real = 1.0) where B <: RectangularBinning
         isboundarycondition(bc, "grid")  || error("Boundary condition '$bc' not valid.")
         new{B}(b, bc, f)
     end
 end
+
 Base.show(io::IO, g::SingleGrid) = print(io, "SingleGrid{$(g.b)}")
 
 
-function transferoperatorgenerator(pts, method::SingleGrid)
+function transopergenerator(pts, method::SingleGrid)
     b = method.b
     
     # Calculate minima and edgelengths given the chosen grid
@@ -49,9 +51,11 @@ end
 
 Base.show(io::IO, g::TransferOperatorGenerator) = print(io, "TransferOperatorGenerator{$(g.method)}")
 
-# Stricly speaking, for the single-grid estimator, making a generator is not necessary.
-# However, follow the conventions for the rest of the estimators and use it.
-function (tog::TransferOperatorGenerator{<:SingleGrid})(bc = "circular")
+function zerocols(M::AbstractArray{T, 2}) where T
+    findall(sum(M[:, i] for i = 1:size(M, 2)) .== 0)
+end
+
+function (tog::TransferOperatorGenerator{<:SingleGrid})()
     boundary_condition = tog.method.bc
 
     alloc_frac = tog.method.f
@@ -153,36 +157,24 @@ function (tog::TransferOperatorGenerator{<:SingleGrid})(bc = "circular")
     # Frobenius operator (transfer operator). Filter out the nonzero entries.
     # The number of rows in the matrix is given by the number of unique points
     # we have in the embedding.
-    TO = Array(sparse(I[1:k], J[1:k], P[1:k], n_visited, n_visited))
+    M = Array(sparse(I[1:k], J[1:k], P[1:k], n_visited, n_visited))
     
     # There may be boxes which are visited by points of the orbit, but not by
-    # any image points.
-    # zc = zerocols(TO)
-    # l = length(zc)
-    # if l > 0
-    #     col = zc[1]
-    #     warn("There were $l all-zero columns. Column $col is the culprit -> normalizing ...")
-    #     TO = TO ./ sum(TO, 2)
-    # end
-    # If the first bin is not visited, make every point starting in that bin
+    # any image points.  # If the first bin is not visited, make every point starting in that bin
     # jump to the same bin with probability one.
-    # zc = zerocols(TO)
-    # if length(zc) > 0
-    #     warn("There were $l all-zero columns: column $col")
-    #     @show zc
-    #     i = zc[1]
-    #     TO[i, 1] = 1.0
-    # end
+    zc = zerocols(M)
+    l = length(zc)
+    if l > 0
+        #@warn "There were $l all-zero columns.\nColumn(s) $(zc) is/are the culprit(s)."
+        
+        M[zc, 1] .= 1.0
+    end
+
+    params = NamedTuple()
+    TransferOperatorApproximation(tog, M, params)
 end
 
-"""
-    transferoperator(pts, method::SingleGrid, bc::String)
-
-Compute the transfer operator from the phase/state space `points`,
-using boundary condition `bc` ("circular" or "random"), over a
-rectangular partition of the state space.
-"""
-function transferoperator(pts, method::SingleGrid, bc::String = "circular")
-    tog = transferoperatorgenerator(pts, method)
-    tog(bc)
+function transferoperator(pts, method::SingleGrid)
+    tog = transopergenerator(pts, method)
+    tog()
 end

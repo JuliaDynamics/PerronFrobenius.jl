@@ -1,3 +1,5 @@
+export AbstractTransferOperator
+
 using Printf
 
 abstract type AbstractTransferOperator end
@@ -27,11 +29,10 @@ function Base.summary(to::T) where T<:AbstractTransferOperator
     return "$transferoperatortype of size $s with $percent_nonzero% nonzero entries"
 end
 
-function matstring(to::T) where T<:AbstractTransferOperator
+function mat(to::T) where T<:AbstractTransferOperator
     return summary(to)
 end
 
 Base.show(io::IO, to::T) where {T<:AbstractTransferOperator} =
-    println(io, matstring(to))
+    println(io, mat(to))
 
-export AbstractTransferOperator

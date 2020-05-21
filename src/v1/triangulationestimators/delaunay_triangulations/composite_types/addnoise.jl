@@ -1,10 +1,6 @@
 
-import Distributions:
-    Uniform
-
-import Statistics:
-    std
-
+import Distributions: Uniform
+import Statistics: std
 import StaticArrays: MArray, SArray, MVector, SVector
 
 """

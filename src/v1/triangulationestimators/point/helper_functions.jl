@@ -1,5 +1,6 @@
 import LinearAlgebra: det 
 import StaticArrays: SizedMatrix
+import .DelaunayTriangulations: DelaunayTriangulation
 
 """ Re-zeros the array `a`. """
 function rezero!(a)
@@ -147,14 +148,14 @@ function idxs_potentially_intersecting_simplices(all_pts, DT::DelaunayTriangulat
 	original_pts = all_pts[1:(end - 1)]
 	forward_pts = all_pts[2:end]
 
-	simplices = [MutableSimplex(original_pts[DT[i]]) for i = 1:n_simplices]
-	image_simplices = [MutableSimplex(forward_pts[DT[i]]) for i = 1:n_simplices]
+	simplices = [SimplexTypes.MutableSimplex(original_pts[DT[i]]) for i = 1:n_simplices]
+	image_simplices = [SimplexTypes.MutableSimplex(forward_pts[DT[i]]) for i = 1:n_simplices]
 
-	cs = [centroid(simplices[i]) for i = 1:n_simplices]
-	cs_im = [centroid(image_simplices[i]) for i = 1:n_simplices]
+	cs = [SimplexTypes.centroid(simplices[i]) for i = 1:n_simplices]
+	cs_im = [SimplexTypes.centroid(image_simplices[i]) for i = 1:n_simplices]
 
-	rs = [radius(simplices[i]) for i = 1:n_simplices]
-	rs_im = [radius(image_simplices[i]) for i = 1:n_simplices]
+	rs = [SimplexTypes.radius(simplices[i]) for i = 1:n_simplices]
+	rs_im = [SimplexTypes.radius(image_simplices[i]) for i = 1:n_simplices]
 
 	@inbounds for i = 1:n_simplices
 	    δ = transpose(cs_im[idx] .- cs[i]) * (cs_im[idx] .- cs[i]) .- ((rs_im[idx] + rs[i])^2)
