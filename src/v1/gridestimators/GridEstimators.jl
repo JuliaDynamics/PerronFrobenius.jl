@@ -6,6 +6,6 @@ using Reexport
     import ..transferoperator 
     
     include("binvisits.jl")
-    include("Grid.jl")
+    include("SingleGrid.jl")
     include("invariant_measures_grid.jl")
 end
