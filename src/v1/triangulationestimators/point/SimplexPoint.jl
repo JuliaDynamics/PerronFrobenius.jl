@@ -9,6 +9,9 @@ include("helper_functions.jl")
 
 A transfer operator estimator using a triangulation partition and approximate simplex intersections[^Diego2019]. 
 
+To use this estimator, the Simplices.jl package must be brought into scope by doing `using Simplices` after 
+`using PerronFrobenius`.
+
 [^Diego2019]: Diego, David, Kristian Agasøster Haaga, and Bjarte Hannisdal. "Transfer entropy computation using the Perron-Frobenius operator." Physical Review E 99.4 (2019): 042212.
 """
 struct SimplexPoint <: TransferOperator

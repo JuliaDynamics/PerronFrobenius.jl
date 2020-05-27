@@ -1,3 +1,4 @@
+export invariantmeasure
 
 function invariantmeasure(pts, method::SingleGrid)
     tog = transopergenerator(pts, method)

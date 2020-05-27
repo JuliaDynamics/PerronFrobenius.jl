@@ -7,5 +7,4 @@ using Reexport
     
     include("binvisits.jl")
     include("SingleGrid.jl")
-    include("invariant_measures_grid.jl")
 end

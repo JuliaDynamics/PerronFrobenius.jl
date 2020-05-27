@@ -6,7 +6,10 @@ export SimplexExact, transferoperator
 A transfer operator estimator using a triangulation partition and exact 
 simplex intersections[^Diego2019]. 
 
-*Note: due to the exact simplex intersection computations, this estimator is slow compared to [`SimplexApprox`](@ref).*
+To use this estimator, the Simplices.jl 
+package must be brought into scope by doing `using Simplices` after 
+`using PerronFrobenius`. *Note: due to computing the exact simplex intersection, 
+this estimator is slow compared to `SimplexApprox`.*
 
 [^Diego2019]: Diego, David, Kristian Agasøster Haaga, and Bjarte Hannisdal. "Transfer entropy computation using the Perron-Frobenius operator." Physical Review E 99.4 (2019): 042212.
 """

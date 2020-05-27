@@ -26,7 +26,7 @@ Alternatively, compute the distribution from a precomputed transfer operator app
 
 ### `SingleGrid` estimator 
 
-Use the [`SingleGrid`](@ref) estimator for long time series. 
+Use the `SingleGrid` estimator for long time series. 
 
 ```julia
 using DelayEmbeddings, PerronFrobenius
@@ -46,8 +46,8 @@ invariantmeasure(to)
 
 ### Triangulation estimators
 
-The [`SimplexApprox`](@ref) estimator can be useful for very short time series. 
-The [`SimplexExact`](@ref) estimator can also be useful for very short time series.
+The `SimplexApprox` estimator can be useful for very short time series. 
+The `SimplexExact` estimator can also be useful for very short time series.
 It computes transition probabilities from exact simplex intersections, so 
 is much slower than the `SimplexApprox` estimator.
 

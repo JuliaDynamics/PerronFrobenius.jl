@@ -49,6 +49,7 @@ Create a transfer operator `to` from the phase/state space points `x` based on t
 Using the `SingleGrid` estimator will partition the state space into rectangular bins, while 
 the `SimplexPoint` and `SimplexExact` estimators will triangulate the state space.
 
+- If using any of the triangulation estimators, `Simplices` must be imported after `PerronFrobenius`.
 - If using `SimplexPoint` and `randomsampling==true`, then each simplex is represented by a 
     point cloud uniformly distributed within each simplex. If `randomsampling==false`, then 
     an even simplex splitting routine is used to generate interior points. `n` is the 
@@ -60,7 +61,7 @@ the `SimplexPoint` and `SimplexExact` estimators will triangulate the state spac
 
 ### Grid estimators
 
-Use the [`SingleGrid`](@ref) estimator for long time series.
+Use the `SingleGrid` estimator for long time series.
 
 ```julia 
 n = 30000
@@ -77,8 +78,10 @@ transferoperator(D, method)
 
 ### Triangulation estimators
 
-Use the [`SimplexExact`](@ref) (slow) estimator or [`SimplexExact`](@ref) (also slow, 
+Use the `SimplexExact` (slow) estimator or `SimplexPoint` (also slow, 
 but faster than `SimplexExact`) estimator for very short time series.
+For these estimators to be imported, you need to load `Simplices` *after*
+loading `PerronFrobenius`.
 
 ```julia 
 n = 30
