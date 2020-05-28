@@ -7,7 +7,7 @@ import CausalityToolsBase: RectangularBinningScheme
 VALIDRECTBINS = Union{Int, Float64, Vector{Int}, Vector{Float64}, Tuple{Vector{Tuple{Float64,Float64}},Int64}}
 
 """
-InducedRectangularBinning
+    InducedRectangularBinning
 
 Instructions for creating a rectangular target partition and a rectangular source partition.
 
@@ -26,7 +26,7 @@ struct InducedRectangularBinning <: RectangularBinningScheme
 end
 
 """
-AverageRectangularBinning
+    AverageRectangularBinning
 
 Instructions for constructing a rectangular target partition and multiple source 
 partitions.
