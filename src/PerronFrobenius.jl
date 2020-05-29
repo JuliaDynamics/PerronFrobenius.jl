@@ -21,5 +21,5 @@ module PerronFrobenius
         end
     end
     #import .TriangulationEstimators: SimplexPoint, SimplexExact 
-    #export SimplexPoint, SimplexExact
+    export SimplexPoint, SimplexExact
 end

@@ -1,7 +1,7 @@
 export SimplexExact, transferoperator
 
 """
-    SimplexExact() <: TransferOperator
+    SimplexExact() <: TriangulationBasedTransferOperator
 
 A transfer operator estimator using a triangulation partition and exact 
 simplex intersections[^Diego2019]. 
@@ -13,7 +13,7 @@ this estimator is slow compared to `SimplexApprox`.*
 
 [^Diego2019]: Diego, David, Kristian Agasøster Haaga, and Bjarte Hannisdal. "Transfer entropy computation using the Perron-Frobenius operator." Physical Review E 99.4 (2019): 042212.
 """
-struct SimplexExact <: TransferOperator
+struct SimplexExact <: TriangulationBasedTransferOperator
     bc::String
     
     function SimplexExact(bc::String = "circular")

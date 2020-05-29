@@ -1,9 +1,16 @@
-export TransferOperator, transferoperator, TransferOperatorGenerator, transopergenerator
+export TransferOperator, transferoperator, TransferOperatorGenerator, transopergenerator,
+    GridBasedTransferOperator, TriangulationBasedTransferOperator
 
 import CausalityToolsBase.BinningScheme
 
 """ Supertype of all transfer operator estimators. """
 abstract type TransferOperator end 
+
+""" Supertype of all grid-based transfer operator estimators """
+abstract type GridBasedTransferOperator <: TransferOperator end
+
+""" Supertype of all triangulation-based transfer operator estimators """
+abstract type TriangulationBasedTransferOperator <: TransferOperator end
 
 """
     TransferOperatorGenerator{E <: TransferOperator}(method::E, pts, init)

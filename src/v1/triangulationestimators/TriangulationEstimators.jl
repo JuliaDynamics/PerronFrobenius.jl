@@ -10,10 +10,12 @@ using Reexport
     import ..isboundarycondition
     import ..invariantmeasure
     import ..InvariantDistribution
-
-    using Requires 
+    import ..TriangulationBasedTransferOperator
+    
+    using Requires
     function __init__()
         @require Simplices="d5428e67-3037-59ba-9ab1-57a04f0a3b6a" begin
+
              # Requirements and useful types
             include("simplex_types/simplex_types.jl")
             include("delaunay_triangulations/DelaunayTriangulations.jl")
@@ -23,6 +25,8 @@ using Reexport
             include("point/SimplexPoint.jl")
             include("exact/SimplexExact.jl")
             include("invariant_measure_simplex.jl")
+
+            export TriangulationBasedTransferOperator
         end
     end
    

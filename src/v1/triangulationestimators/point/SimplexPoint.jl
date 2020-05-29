@@ -5,7 +5,7 @@ include("helper_functions.jl")
 
 
 """
-    SimplexPoint() <: TransferOperator
+    SimplexPoint() <: TriangulationBasedTransferOperator
 
 A transfer operator estimator using a triangulation partition and approximate simplex intersections[^Diego2019]. 
 
@@ -14,7 +14,7 @@ To use this estimator, the Simplices.jl package must be brought into scope by do
 
 [^Diego2019]: Diego, David, Kristian Agasøster Haaga, and Bjarte Hannisdal. "Transfer entropy computation using the Perron-Frobenius operator." Physical Review E 99.4 (2019): 042212.
 """
-struct SimplexPoint <: TransferOperator
+struct SimplexPoint <: TriangulationBasedTransferOperator
     bc::String
     
     function SimplexPoint(bc::String = "circular")

@@ -6,14 +6,14 @@ using SparseArrays
 include("binvisits.jl")
 
 """
-    SingleGrid(b::RectangularBinning, bc::String = "none", f::Real = 1.0) <: TransferOperator
+    SingleGrid(b::RectangularBinning, bc::String = "none", f::Real = 1.0) <: GridBasedTransferOperator
 
 A simple estimator for approximating the transfer operator over a partition dictated by `b`.
 `bc` is the boundary condition, and `f` is the allocation factor.
 
 See also: [`RectangularBinning`](@ref).
 """
-struct SingleGrid{B <: RectangularBinning} <: TransferOperator
+struct SingleGrid{B <: RectangularBinning} <: GridBasedTransferOperator
     b::B
     bc::String
     f::Real
