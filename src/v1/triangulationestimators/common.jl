@@ -1,5 +1,6 @@
 import DelayEmbeddings: AbstractDataset 
 
+abstract type TriangulationBasedTransferOperator end
 function invariantize(pts::AbstractDataset, bc = "circular")
     invariant_pts = copy(pts.data)
     if bc == "circular"

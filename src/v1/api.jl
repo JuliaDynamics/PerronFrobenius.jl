@@ -1,5 +1,9 @@
-export TransferOperator, transferoperator, TransferOperatorGenerator, transopergenerator,
-    GridBasedTransferOperator, TriangulationBasedTransferOperator
+export TransferOperator, 
+    transferoperator, 
+    TransferOperatorGenerator, 
+    transopergenerator,
+    GridBasedTransferOperator, 
+    TriangulationBasedTransferOperator
 
 import CausalityToolsBase.BinningScheme
 

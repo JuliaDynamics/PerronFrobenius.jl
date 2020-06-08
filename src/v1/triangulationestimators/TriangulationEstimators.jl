@@ -25,8 +25,6 @@ using Reexport
             include("point/SimplexPoint.jl")
             include("exact/SimplexExact.jl")
             include("invariant_measure_simplex.jl")
-
-            export TriangulationBasedTransferOperator
         end
     end
    
