@@ -10,13 +10,16 @@ using Reexport
     import ..isboundarycondition
     import ..invariantmeasure
     import ..InvariantDistribution
-    import ..TriangulationBasedTransferOperator
     
     using Requires
     function __init__()
         @require Simplices="d5428e67-3037-59ba-9ab1-57a04f0a3b6a" begin
+            export TriangulationBasedTransferOperator
+            
+            """ Supertype of all triangulation-based transfer operator estimators """
+            abstract type TriangulationBasedTransferOperator <: TransferOperator end
 
-             # Requirements and useful types
+            # Requirements and useful types
             include("simplex_types/simplex_types.jl")
             include("delaunay_triangulations/DelaunayTriangulations.jl")
 
