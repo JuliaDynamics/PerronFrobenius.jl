@@ -3,12 +3,12 @@ module PerronFrobenius
     import CausalityToolsBase 
     export RectangularBinning
     
-    include("v1/api.jl")
-    include("v1/boundary_conditions.jl")
-    include("v1/transfer_operators.jl")
-    include("v1/invariant_measures.jl")
-    include("v1/gridestimators/SingleGrid.jl")
-    include("v1/invariant_measures_grid.jl")
+    include("api.jl")
+    include("boundary_conditions.jl")
+    include("transfer_operators.jl")
+    include("invariant_measures.jl")
+    include("gridestimators/SingleGrid.jl")
+    include("invariant_measures_grid.jl")
     
     using Requires 
     function __init__()
