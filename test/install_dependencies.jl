@@ -3,9 +3,6 @@ if VERSION >= v"0.7.0-"
     # Project.toml still has some gotchas.  So:
     Pkg = Base.require(Base.PkgId(Base.UUID(0x44cfe95a1eb252eab672e2afdf69b78f), "Pkg"))
 end
-import Pkg
-Pkg.add("Conda")
-Pkg.add("PyCall")
 
 # Let PyCall.jl use Python interpreter from Conda.jl
 # See: https://github.com/JuliaPy/PyCall.jl
