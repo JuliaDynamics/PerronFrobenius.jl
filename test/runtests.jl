@@ -1,25 +1,98 @@
-if lowercase(get(ENV, "CI", "false")) == "true"
-    include("install_dependencies.jl")
+using DelayEmbeddings
+using PerronFrobenius
+using Simplices 
+using Test 
+
+@testset "Grid estimators" begin 
+    n = 200
+    x = [cos(2π*(t + sin(t)/30)) for t in 1:n] .+ 0.2rand(n)
+    push!(x, 5)
+    τs = (0, -2, -3)
+    js = (1, 1, 1)
+    D = genembed(x, τs, js)
+
+    @testset "SingleGrid" begin 
+        @test SingleGrid(RectangularBinning(5)) isa SingleGrid
+        @test SingleGrid(RectangularBinning(5), "circular") isa SingleGrid
+
+        method = SingleGrid(RectangularBinning(5))
+        tog = transopergenerator(D, method)
+        TO = tog()
+        E = TransferOperatorGenerator{SingleGrid{RectangularBinning}}
+        @test TO isa TransferOperatorApproximation{<:E}
+        M = TO.M
+        @test all([M[i, :] |> sum .≈ 1.0 for i = 1:size(M, 2)])
+
+        @test transferoperator(D, method) isa TransferOperatorApproximation{<:E}
+    end
+end
+@testset "Triangulation estimators" begin 
+    n = 20
+    x = [cos(2π*(t + sin(t)/30)) for t in 1:n] .+ 0.2rand(n)
+    push!(x, 5)
+    τs = (0, -2, -3)
+    js = (1, 1, 1)
+    D = genembed(x, τs, js)
+
+    @testset "SimplexExact" begin
+        tog = transopergenerator(D, SimplexExact())
+        TO = tog()
+        E = TransferOperatorGenerator{SimplexExact}
+        @test TO isa TransferOperatorApproximation{<:E}
+        M = TO.M
+        @test all(sum(M, dims = 2) .≈ 1.0)
+    end
+
+    @testset "SimplexApprox" begin
+        tog = transopergenerator(D, SimplexPoint())
+        TO = tog(n = 50)
+        E = TransferOperatorGenerator{SimplexPoint}
+        @test TO isa TransferOperatorApproximation{<:E}
+        M = TO.M
+        @test all(sum(M, dims = 2) .≈ 1.0)
+    end
 end
 
-using Test
-using CausalityToolsBase
-using StateSpaceReconstruction
-using PerronFrobenius
+@testset "Invariant measures" begin 
 
+n = 200
+x = [cos(2π*(t + sin(t)/30)) for t in 1:n] .+ 0.2rand(n)
+push!(x, 5)
+τs = (0, -2, -3)
+js = (1, 1, 1)
+D = genembed(x, τs, js)
 
-# Individual constructors (i.e. rectangularinvariantmeasure(pts, ϵ))
-include("test_rectangularmeasure_constructor.jl")
-#include("test_inducedmeasure.jl")
-#include("test_inducedmeasure_constructor.jl")
-#include("test_averagemeasure.jl")
-#include("test_averagemeasure_constructor.jl")
+@testset "Grid estimators" begin 
+    method = SingleGrid(RectangularBinning(5))
+    to = transferoperator(D, method)
+    iv = invariantmeasure(to)
+    @test iv isa InvariantDistribution
+end
 
-# Test the estimators (i.e. invariantmeasure(pts, binningscheme))
-include("test_invariantmeasure_estimators.jl")
+@testset "Triangulation estimators" begin 
+n = 20
+x = [cos(2π*(t + sin(t)/30)) for t in 1:n] .+ 0.2rand(n)
+push!(x, 5)
+τs = (0, -2, -3)
+js = (1, 1, 1)
+D = genembed(x, τs, js)
 
-include("test_gridestimator.jl")
-include("test_transferoperator_rectangular.jl")
+    @testset "SimplexPoint" begin 
+        method = SimplexPoint()
+        to = transferoperator(D, method)
+        iv = invariantmeasure(to)
+        @test invariantmeasure(to) isa InvariantDistribution
+        @test invariantmeasure(D, method) isa InvariantDistribution
+    end
 
-#include("triangulations.jl")
-include("test_triangulationestimators.jl")
+    @testset "SimplexExact" begin 
+        method = SimplexExact()
+        to = transferoperator(D, method)
+        iv = invariantmeasure(to)
+        @test invariantmeasure(to) isa InvariantDistribution
+        @test invariantmeasure(D, method) isa InvariantDistribution
+    end
+
+end
+
+end
